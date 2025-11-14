@@ -14,7 +14,7 @@ export default function FlashSaleAccount() {
                         <img src="/images/icons/flash-sale.png" alt="" className="aspect-auto" />
                         Flash Sale
                     </h2>
-                    <Link className="text-white" to="/">
+                    <Link className="flex items-center rounded-xl border px-3 py-2 text-white" to="/">
                         Xem tất cả
                         <FcFlashOn className="text-base" />
                     </Link>

@@ -54,7 +54,7 @@ export default function AccountItem({ account }) {
                         <span className="text-xs font-bold text-gray-400 line-through">{formatNumber(2800000)}đ</span>
                         <span className="text-sm font-bold text-red-600 md:text-base">{formatNumber(2240000)}đ</span>
                     </div>
-                    <Button className="mt-2 w-full md:mt-0 md:w-fit">
+                    <Button variant={"primary"} className="mt-2 w-full md:mt-0 md:w-fit">
                         <HiShoppingCart />
                         <span>Mua</span>
                     </Button>
