@@ -1,4 +1,4 @@
-import User from "./schemas/User.schema";
+import User from "./schemas/user.schema";
 import { TokenPayload } from "./models/requests/User.requests";
 
 declare module "express" {

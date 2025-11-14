@@ -1,60 +1,58 @@
-import { ObjectId } from "mongodb";
-import { UserVerifyStatus } from "~/constants/enums";
-interface UserType {
-    _id?: ObjectId;
-    name: string;
-    email: string;
-    date_of_birth: Date;
-    password: string;
-    created_at?: Date;
-    updated_at?: Date;
-    email_verify_token?: string;
-    forgot_email_token?: string;
-    verify?: UserVerifyStatus;
-
-    bio?: string;
-    location?: string;
-    website?: string;
-    username?: string;
-    avatar?: string;
-    cover_photo?: string;
+import { v7 as uuidv7 } from "uuid";
+enum Role {
+    USER = "USER",
+    ADMIN = "ADMIN",
 }
-class User {
-    _id: ObjectId;
-    name: string;
-    email: string;
-    date_of_birth: Date;
-    password: string;
-    created_at: Date;
-    updated_at: Date;
-    email_verify_token: string;
-    forgot_email_token: string;
-    verify: UserVerifyStatus;
 
-    bio: string;
-    location: string;
-    website: string;
+interface UserType {
+    id?: string;
     username: string;
-    avatar: string;
-    cover_photo: string;
-    constructor(user: UserType) {
-        this._id = user._id || new ObjectId();
-        this.name = user.name || "";
-        this.email = user.email;
-        this.date_of_birth = user.date_of_birth || new Date();
-        this.password = user.password;
-        this.created_at = user.created_at || new Date();
-        this.updated_at = user.updated_at || new Date();
-        this.email_verify_token = user.email_verify_token || "";
-        this.forgot_email_token = user.forgot_email_token || "";
-        this.verify = user.verify || UserVerifyStatus.Unverifyed;
+    email: string;
+    password: string;
+    role?: Role;
+    balance?: bigint;
+    totalDeposited?: bigint;
+    items?: bigint;
+    banned?: boolean;
+    ipAddress?: string | null;
+    rememberToken?: string | null;
+    emailVerifiedAt?: Date | null;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
 
-        this.bio = user.bio || "";
-        this.location = user.location || "";
-        this.website = user.website || "";
-        this.username = user.username || "";
-        this.avatar = user.avatar || "";
-        this.cover_photo = user.cover_photo || "";
+class User {
+    id: string;
+    username: string;
+    email: string;
+    password: string;
+    role: Role;
+    balance: bigint;
+    totalDeposited: bigint;
+    items: bigint;
+    banned: boolean;
+    ipAddress: string | null;
+    rememberToken: string | null;
+    emailVerifiedAt: Date | null;
+    createdAt: Date;
+    updatedAt: Date;
+
+    constructor(user: UserType) {
+        this.id = user.id || uuidv7();
+        this.username = user.username;
+        this.email = user.email;
+        this.password = user.password;
+        this.role = user.role || Role.USER;
+        this.balance = user.balance || BigInt(0);
+        this.totalDeposited = user.totalDeposited || BigInt(0);
+        this.items = user.items || BigInt(0);
+        this.banned = user.banned || false;
+        this.ipAddress = user.ipAddress || null;
+        this.rememberToken = user.rememberToken || null;
+        this.emailVerifiedAt = user.emailVerifiedAt || null;
+        this.createdAt = user.createdAt || new Date();
+        this.updatedAt = user.updatedAt || new Date();
     }
 }
+
 export default User;
