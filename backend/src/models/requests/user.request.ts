@@ -1,12 +1,10 @@
 import { JwtPayload } from "jsonwebtoken";
 import { TokenType, UserVerifyStatus } from "~/constants/enums";
+import { loginSchema, registerSchema } from "../auth/auth.schema";
+import z from "zod/v3";
 
-export interface RegisterRequestBody {
-    username: string;
-    email: string;
-    password: string;
-    confirm_password: string;
-}
+export type RegisterRequestBody = z.infer<typeof registerSchema>["body"];
+export type LoginRequestBody = z.infer<typeof loginSchema>["body"];
 export interface TokenPayload extends JwtPayload {
     userId: string;
     token_type: TokenType;

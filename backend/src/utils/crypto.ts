@@ -5,8 +5,8 @@ export default class AlgoCrypoto {
         const password = await bcrypt.hashSync(pwd, 10);
         return password;
     };
-    static verifyPassword = async (pwd: string, pwdHash: string) => {
-        const isValid: boolean = await bcrypt.compare(pwd, pwdHash);
+    static verifyPassword = async (pwdRaw: string, pwdHash: string) => {
+        const isValid: boolean = await bcrypt.compare(pwdRaw, pwdHash);
         return isValid;
     };
 }

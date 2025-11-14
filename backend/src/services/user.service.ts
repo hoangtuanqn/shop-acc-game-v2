@@ -1,13 +1,15 @@
+import z from "zod/v3";
 import { TokenType, UserVerifyStatus } from "~/constants/enums";
 import { HTTP_STATUS } from "~/constants/httpStatus";
 import { ErrorWithStatus } from "~/models/Error";
-import { RegisterRequestBody } from "~/models/requests/user.request";
 import userRespository from "~/repositories/user.repository";
 import AlgoCrypoto from "~/utils/crypto";
 import AlgoJwt from "~/utils/jwt";
+import { loginSchema } from "./../models/auth/auth.schema";
+import { RegisterRequestBody } from "~/models/requests/user.request";
 
 class UserService {
-    create = async (data: RegisterRequestBody) => {
+    public create = async (data: RegisterRequestBody) => {
         const { email, username, password } = data;
 
         const emailExisted = await userRespository.findByEmail(email);
@@ -45,10 +47,38 @@ class UserService {
         };
     };
 
+    public login = async (data: z.infer<typeof loginSchema>["body"]) => {
+        const { username, password } = data;
+        const accountExisted = await userRespository.findByUsername(username);
+        if (!accountExisted || !(await AlgoCrypoto.verifyPassword(password, accountExisted.password))) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Thông tin đăng nhập của bạn không hợp lệ!",
+            });
+        }
+        const [accessToken, refreshToken] = await Promise.all([
+            this.signToken({
+                userId: accountExisted.id,
+                verify: UserVerifyStatus.Verified,
+                type: TokenType.AccessToken,
+            }),
+            this.signToken({
+                userId: accountExisted.id,
+                verify: UserVerifyStatus.Verified,
+                type: TokenType.RefreshToken,
+            }),
+        ]);
+
+        return {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+        };
+    };
+
     private signToken = ({ userId, verify, type }: { userId: string; verify: UserVerifyStatus; type: TokenType }) => {
         return AlgoJwt.signToken({
             payload: { type, userId, verify },
-            options: { expiresIn: "15m" },
+            options: { expiresIn: "2h" },
         }) as Promise<string>;
     };
 }
