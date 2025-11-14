@@ -106,7 +106,7 @@ const Header = () => {
                             <span>Đăng nhập</span>
                         </Link>
 
-                        <Link to="">
+                        <Link to="/register">
                             <Button variant={"primary"}>
                                 <FiUserPlus />
                                 <span>Đăng ký</span>

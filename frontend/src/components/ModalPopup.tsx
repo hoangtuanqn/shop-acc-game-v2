@@ -7,7 +7,6 @@ export default function ModalPopup() {
         const hideUntil = getItem("hideNoticeUntil");
         return !hideUntil || Date.now() > Number(hideUntil);
     });
-    console.log("XIn chao");
 
     const handleClose = (type: "close" | "close-1h" = "close") => {
         if (type === "close-1h") {
