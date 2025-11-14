@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ZodError } from "zod";
-import { AnyZodObject } from "zod/v3";
+import { AnyZodObject, ZodError } from "zod/v3";
 import { HTTP_STATUS } from "~/constants/httpStatus";
 
 export const validate = (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
@@ -18,11 +17,9 @@ export const validate = (schema: AnyZodObject) => (req: Request, res: Response, 
 
         return next();
     } catch (err) {
-        console.log("err", err);
-
         if (err instanceof ZodError) {
             const errors: string[] = [];
-            for (let error of err.issues) {
+            for (let error of Array(...err.issues)) {
                 errors.push(error.message);
             }
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
@@ -30,9 +27,7 @@ export const validate = (schema: AnyZodObject) => (req: Request, res: Response, 
                 message: errors[0] || "Kiểm tra dữ liệu đầu vào thất bại!",
                 errors,
             });
-            // return next(new ApiError(400, "Validation error", "VALIDATION_ERROR", errors));
         }
-
         return next(err);
     }
 };

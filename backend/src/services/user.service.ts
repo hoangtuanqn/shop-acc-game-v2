@@ -1,12 +1,11 @@
-import z from "zod/v3";
 import { TokenType, UserVerifyStatus } from "~/constants/enums";
 import { HTTP_STATUS } from "~/constants/httpStatus";
 import { ErrorWithStatus } from "~/models/Error";
 import userRespository from "~/repositories/user.repository";
 import AlgoCrypoto from "~/utils/crypto";
 import AlgoJwt from "~/utils/jwt";
-import { loginSchema } from "./../models/auth/auth.schema";
-import { RegisterRequestBody } from "~/models/requests/user.request";
+import { ForgotPasswordRequestBody, LoginRequestBody, RegisterRequestBody } from "~/models/requests/user.request";
+import Helpers from "~/utils/helpers";
 
 class UserService {
     public create = async (data: RegisterRequestBody) => {
@@ -47,7 +46,7 @@ class UserService {
         };
     };
 
-    public login = async (data: z.infer<typeof loginSchema>["body"]) => {
+    public login = async (data: LoginRequestBody) => {
         const { username, password } = data;
         const accountExisted = await userRespository.findByUsername(username);
         if (!accountExisted || !(await AlgoCrypoto.verifyPassword(password, accountExisted.password))) {
@@ -73,6 +72,49 @@ class UserService {
             access_token: accessToken,
             refresh_token: refreshToken,
         };
+    };
+
+    public forgotPassword = async ({ email }: ForgotPasswordRequestBody) => {
+        const accountExisted = await userRespository.findByEmail(email);
+
+        if (accountExisted) {
+            const forgotPasswordToken = await this.signToken({
+                userId: accountExisted.id,
+                verify: UserVerifyStatus.Verified,
+                type: TokenType.ForgotPasswordToken,
+            });
+
+            await userRespository.forgotPassword(email, forgotPasswordToken);
+        }
+
+        return true;
+    };
+
+    public getLinkResetPassword = async ({ token }: { token: string }) => {
+        const tokenExisted = await userRespository.findTokenResetPassword(token);
+
+        if (!tokenExisted) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Đường dẫn không hợp lệ!",
+            });
+        }
+        const payload = await AlgoJwt.verifyToken({ token });
+        console.log(payload);
+
+        if (!Helpers.isTypeToken(payload, TokenType.ForgotPasswordToken)) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Đường dẫn không hợp lệ hoặc đã kết hạn!",
+            });
+        }
+
+        return tokenExisted;
+    };
+    public resetPassword = async (token: string, password: string) => {
+        const passwordHash = await AlgoCrypoto.hashPassword(password);
+        const resetPassword = await userRespository.resetPasswordByToken(token, passwordHash);
+        return resetPassword;
     };
 
     private signToken = ({ userId, verify, type }: { userId: string; verify: UserVerifyStatus; type: TokenType }) => {

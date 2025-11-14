@@ -1,4 +1,3 @@
-import { TokenType, UserVerifyStatus } from "~/constants/enums";
 import User from "~/schemas/user.schema";
 import prisma from "~/services/database.service";
 
@@ -20,6 +19,29 @@ class UserRepository {
     findByUsername = async (username: string) => {
         const result = await prisma.user.findUnique({
             where: { username },
+        });
+        return result;
+    };
+
+    forgotPassword = async (email: string, token: string) => {
+        const result = await prisma.user.update({
+            where: { email },
+            data: { forgotEmailToken: token },
+        });
+        return result;
+    };
+
+    findTokenResetPassword = async (token: string) => {
+        const result = await prisma.user.findUnique({
+            where: { forgotEmailToken: token },
+        });
+        return result;
+    };
+
+    resetPasswordByToken = async (token: string, password: string) => {
+        const result = await prisma.user.update({
+            where: { forgotEmailToken: token },
+            data: { password, forgotEmailToken: null },
         });
         return result;
     };

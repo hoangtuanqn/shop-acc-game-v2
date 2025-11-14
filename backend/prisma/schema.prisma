@@ -17,8 +17,8 @@ model User {
   totalDeposited   BigInt  @default(0) @map("total_deposited")
   items            BigInt  @default(0)
   verify           Int     @default(0)
-  emailVerifyToken String? @map("email_verify_token")
-  forgotEmailToken String? @map("forgot_email_token")
+  emailVerifyToken String? @unique @map("email_verify_token") @db.VarChar(255)
+  forgotEmailToken String? @unique @map("forgot_email_token") @db.VarChar(255)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
