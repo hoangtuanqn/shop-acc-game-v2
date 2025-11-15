@@ -12,6 +12,8 @@ import {
 } from "~/models/requests/user.request";
 import userService from "~/services/user.service";
 import { HTTP_STATUS } from "~/constants/httpStatus";
+import prisma from "~/configs/prisma";
+import { paginate } from "~/utils/pagination";
 
 export const register = async (
     req: Request<ParamsDictionary, any, RegisterRequestBody>,

@@ -15,7 +15,6 @@ redisClient.connect();
 // sau khi đã định nghĩa routing với biến "router" thì phải sử dụng app.use( .... ) để chạy các routing đã cài trong "router"
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
-// console.log("Xin chao anh em nhe ", redisService.get("tuan"));
 // handler xử lý lỗi cho cả hệ thống
 app.use(defaultErrorHandler);
 app.use(defaultSuccessHandler);
