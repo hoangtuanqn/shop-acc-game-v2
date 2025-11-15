@@ -1,3 +1,4 @@
+export const MAX_HISTORY_PASSWORD = 5;
 export enum UserVerifyStatus {
     Unverifyed, // giá trị là: 0
     Verified, // 1

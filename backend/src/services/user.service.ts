@@ -7,6 +7,7 @@ import AlgoJwt from "~/utils/jwt";
 import { ForgotPasswordRequestBody, LoginRequestBody, RegisterRequestBody } from "~/models/requests/user.request";
 import Helpers from "~/utils/helpers";
 import redisClient from "~/configs/redis";
+import pwsHisRepository from "~/repositories/password-history.repository";
 
 class AuthService {
     public create = async (data: RegisterRequestBody) => {
@@ -35,6 +36,17 @@ class AuthService {
             username,
             password: passwordHash,
         });
+
+        const isPwdExisted = await pwsHisRepository.checkExisted(result.id, password);
+        if (isPwdExisted) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.BAD_REQUEST,
+                message: "Mật khẩu này đã tồn tại trong quá khứ. Hãy đặt mật khẩu khác an toàn hơn!",
+            });
+        }
+
+        // Lưu mk người dùng vô bảng lịch sử
+        await pwsHisRepository.save(result.id, passwordHash);
 
         return await this.signAccesAndRefreshToken(result.id);
     };
@@ -117,6 +129,13 @@ class AuthService {
             throw new ErrorWithStatus({
                 status: HTTP_STATUS.FORBIDDEN,
                 message: "Mật khẩu cũ không chính xác!",
+            });
+        }
+        const isPwdExisted = await pwsHisRepository.checkExisted(userId, newPassword);
+        if (isPwdExisted) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.BAD_REQUEST,
+                message: "Mật khẩu này đã tồn tại trong quá khứ. Hãy đặt mật khẩu khác an toàn hơn!",
             });
         }
         const passwordHash = await AlgoCrypoto.hashPassword(newPassword);

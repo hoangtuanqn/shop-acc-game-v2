@@ -5,10 +5,12 @@ import { defaultErrorHandler } from "./middlewares/error.middlewares";
 import { defaultSuccessHandler } from "./middlewares/success.middlewares";
 import authRouter from "./routes/auth.routes";
 import redisClient from "./configs/redis";
+import { limiterMiddleware } from "./middlewares/common.middleware";
 const app = express();
 const PORT = process.env.PORT || 8000;
 // parse body request
 app.use(express.json()); // hoặc dùng app.use(bodyParser.json());, nhưng phải npm i bodyParser về nữa
+app.use(limiterMiddleware);
 redisClient.connect();
 // sau khi đã định nghĩa routing với biến "router" thì phải sử dụng app.use( .... ) để chạy các routing đã cài trong "router"
 app.use("/auth", authRouter);

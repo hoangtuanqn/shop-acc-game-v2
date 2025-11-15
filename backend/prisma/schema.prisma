@@ -20,10 +20,23 @@ model User {
   emailVerifyToken String? @unique @map("email_verify_token") @db.VarChar(255)
   forgotEmailToken String? @unique @map("forgot_email_token") @db.VarChar(255)
 
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  passwordHistories PasswordHistory[]
+
+  @@map("users")
+}
+
+model PasswordHistory {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id") @db.VarChar(255)
+  password  String   @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("users")
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("password_histories")
 }
 
 enum Role {
