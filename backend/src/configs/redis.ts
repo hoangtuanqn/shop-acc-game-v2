@@ -1,5 +1,5 @@
 import { createClient, RedisClientType } from "redis";
-class RedisService {
+class RedisClient {
     private client: RedisClientType;
     private isConnect = false;
     constructor() {
@@ -17,6 +17,7 @@ class RedisService {
     }
     connect = async () => {
         if (this.isConnect) return;
+
         try {
             await this.client.connect();
         } catch (err) {
@@ -48,5 +49,5 @@ class RedisService {
         return await this.client.del(key);
     };
 }
-const redisService = new RedisService();
-export default redisService;
+const redisClient = new RedisClient();
+export default redisClient;

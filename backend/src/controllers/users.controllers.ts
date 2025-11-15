@@ -1,11 +1,14 @@
 import { NextFunction, ParamsDictionary } from "express-serve-static-core";
 import { Request, Response } from "express";
 import {
+    ChangePasswordRequestBody,
     ForgotPasswordRequestBody,
     LoginRequestBody,
+    RefreshTokenRequestBody,
     RegisterRequestBody,
     ResetPasswordRequestBody,
     ResetPasswordRequestParams,
+    VerifyEmailRequestParams,
 } from "~/models/requests/user.request";
 import userService from "~/services/user.service";
 import { HTTP_STATUS } from "~/constants/httpStatus";
@@ -84,11 +87,7 @@ export const resetPassword = async (
         return next(error);
     }
 };
-export const verifyEmail = async (
-    req: Request<ResetPasswordRequestParams, any, ResetPasswordRequestBody>,
-    res: Response,
-    next: NextFunction,
-) => {
+export const verifyEmail = async (req: Request<VerifyEmailRequestParams>, res: Response, next: NextFunction) => {
     const { token } = req.params;
     const { password } = req.body;
     try {
@@ -100,17 +99,33 @@ export const verifyEmail = async (
         return next(error);
     }
 };
-export const changePassword = async (
-    req: Request<ResetPasswordRequestParams, any, ResetPasswordRequestBody>,
+// export const changePassword = async (
+//     req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
+//     res: Response,
+//     next: NextFunction,
+// ) => {
+//     const {  } = req.body;
+//     try {
+//         await userService.resetPassword(token, password);
+//         return res.status(HTTP_STATUS.OK).json({
+//             message: "Đã đặt lại mật khẩu thành công!",
+//         });
+//     } catch (error) {
+//         return next(error);
+//     }
+// };
+export const refreshToken = async (
+    req: Request<ResetPasswordRequestParams, any, RefreshTokenRequestBody>,
     res: Response,
     next: NextFunction,
 ) => {
-    const { token } = req.params;
-    const { password } = req.body;
+    const { token } = req.body;
+    const userId = req.userId as string;
     try {
-        await userService.resetPassword(token, password);
+        const result = await userService.refreshToken(userId, token);
         return res.status(HTTP_STATUS.OK).json({
-            message: "Đã đặt lại mật khẩu thành công!",
+            message: "Cấp lại token mới thành công!",
+            result,
         });
     } catch (error) {
         return next(error);

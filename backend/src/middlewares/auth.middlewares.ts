@@ -20,7 +20,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
                 message: "Token của bạn không hợp lệ!",
             });
         }
-        req.user = payload;
+        req.userId = payload.userId;
 
         next();
     } catch (error) {
@@ -30,8 +30,9 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 export const verifyToken =
-    (type: TokenType) => async (req: Request<{ token: string }>, res: Response, next: NextFunction) => {
-        const { token } = req.params;
+    (type: TokenType, dataIn: "body" | "params" = "params") =>
+    async (req: Request<{ token: string }>, res: Response, next: NextFunction) => {
+        const { token } = dataIn === "params" ? req.params : req.body;
         try {
             const payload = await AlgoJwt.verifyToken({ token });
             if (payload.type !== type) {
@@ -40,6 +41,7 @@ export const verifyToken =
                     message: "Token không chính xác!",
                 });
             }
+            req.userId = payload.userId;
             next();
         } catch (error) {
             next(error);

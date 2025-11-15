@@ -1,5 +1,5 @@
+import prisma from "~/configs/prisma";
 import User from "~/schemas/user.schema";
-import prisma from "~/services/database.service";
 
 class UserRepository {
     create = async (data: { username: string; email: string; password: string }) => {

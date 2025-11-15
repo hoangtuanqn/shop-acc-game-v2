@@ -77,3 +77,8 @@ export const verifyEmailParamsSchema = z.object({
         token: jwtSchema,
     }),
 });
+export const refreshTokenSchema = z.object({
+    body: z.object({
+        token: jwtSchema,
+    }),
+});

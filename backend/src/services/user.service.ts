@@ -6,7 +6,7 @@ import AlgoCrypoto from "~/utils/crypto";
 import AlgoJwt from "~/utils/jwt";
 import { ForgotPasswordRequestBody, LoginRequestBody, RegisterRequestBody } from "~/models/requests/user.request";
 import Helpers from "~/utils/helpers";
-import redisService from "./redis.service";
+import redisClient from "~/configs/redis";
 
 class AuthService {
     public create = async (data: RegisterRequestBody) => {
@@ -36,22 +36,7 @@ class AuthService {
             password: passwordHash,
         });
 
-        const [accessToken, refreshToken] = await Promise.all([
-            this.signToken({ userId: result.id, type: TokenType.AccessToken }),
-            this.signToken({
-                userId: result.id,
-                type: TokenType.RefreshToken,
-                expiresIn: ExpiresInTokenType.RefreshToken,
-            }),
-        ]);
-
-        // Lưu lại refresh token vào redis
-        await this.storeRefreshTokenInRedis(result.id, refreshToken);
-
-        return {
-            access_token: accessToken,
-            refresh_token: refreshToken,
-        };
+        return await this.signAccesAndRefreshToken(result.id);
     };
 
     public login = async (data: LoginRequestBody) => {
@@ -63,24 +48,7 @@ class AuthService {
                 message: "Thông tin đăng nhập của bạn không hợp lệ!",
             });
         }
-        const [accessToken, refreshToken] = await Promise.all([
-            this.signToken({
-                userId: accountExisted.id,
-                type: TokenType.AccessToken,
-            }),
-            this.signToken({
-                userId: accountExisted.id,
-                type: TokenType.RefreshToken,
-                expiresIn: ExpiresInTokenType.RefreshToken,
-            }),
-        ]);
-        // Lưu lại refresh token vào redis
-        await this.storeRefreshTokenInRedis(accountExisted.id, refreshToken);
-
-        return {
-            access_token: accessToken,
-            refresh_token: refreshToken,
-        };
+        return await this.signAccesAndRefreshToken(accountExisted.id);
     };
 
     public forgotPassword = async ({ email }: ForgotPasswordRequestBody) => {
@@ -131,6 +99,18 @@ class AuthService {
         }
     };
 
+    public refreshToken = async (userId: string, token: string) => {
+        const tokenInRedis = await redisClient.get(`refreshToken:${userId}`);
+
+        if (!tokenInRedis || tokenInRedis !== token) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Refresh token không được tìm thấy trong hệ thống hoặc không chính xác!",
+            });
+        }
+        return await this.signAccesAndRefreshToken(userId);
+    };
+
     private signToken = ({
         userId,
         type,
@@ -146,8 +126,26 @@ class AuthService {
         }) as Promise<string>;
     };
 
-    private storeRefreshTokenInRedis = async (token: string, userId: string) => {
-        return await redisService.set(`refreshToken:${userId}`, token, ExpiresInTokenType.RefreshToken);
+    private signAccesAndRefreshToken = async (userId: string) => {
+        const [accessToken, refreshToken] = await Promise.all([
+            this.signToken({
+                userId,
+                type: TokenType.AccessToken,
+            }),
+            this.signToken({
+                userId,
+                type: TokenType.RefreshToken,
+                expiresIn: ExpiresInTokenType.RefreshToken,
+            }),
+        ]);
+
+        // Lưu lại refresh token vào redis
+        await redisClient.set(`refreshToken:${userId}`, refreshToken, ExpiresInTokenType.RefreshToken);
+
+        return {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+        };
     };
 }
 const authService = new AuthService();

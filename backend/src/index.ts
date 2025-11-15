@@ -4,12 +4,12 @@ import "dotenv/config"; // thêm cái này để có thể sử dụng biến m�
 import { defaultErrorHandler } from "./middlewares/error.middlewares";
 import { defaultSuccessHandler } from "./middlewares/success.middlewares";
 import authRouter from "./routes/auth.routes";
-import redisService from "./services/redis.service";
+import redisClient from "./configs/redis";
 const app = express();
 const PORT = process.env.PORT || 8000;
 // parse body request
 app.use(express.json()); // hoặc dùng app.use(bodyParser.json());, nhưng phải npm i bodyParser về nữa
-redisService.connect().then();
+redisClient.connect();
 // sau khi đã định nghĩa routing với biến "router" thì phải sử dụng app.use( .... ) để chạy các routing đã cài trong "router"
 app.use("/auth", authRouter);
 app.use("/users", userRouter);

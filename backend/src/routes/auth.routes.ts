@@ -5,6 +5,7 @@ import * as authMiddleware from "~/middlewares/auth.middlewares";
 import {
     forgotPasswordSchema,
     loginSchema,
+    refreshTokenSchema,
     registerSchema,
     resetPasswordParamsSchema,
     resetPasswordSchema,
@@ -19,6 +20,12 @@ authRouter.post("/register", validate(registerSchema), authController.register);
 authRouter.post("/login", validate(loginSchema), authController.login);
 authRouter.post("/forgot-password", validate(forgotPasswordSchema), authController.forgotPassword);
 authRouter.get("/verify-email/:token", validate(verifyEmailParamsSchema), authController.verifyEmail);
+authRouter.post(
+    "/refresh-token",
+    validate(refreshTokenSchema),
+    authMiddleware.verifyToken(TokenType.RefreshToken, "body"),
+    authController.refreshToken,
+);
 authRouter.get(
     "/reset-password/:token",
     validate(resetPasswordParamsSchema),
@@ -32,10 +39,10 @@ authRouter.post(
     authController.resetPassword,
 );
 // Thay đổi mk (lúc người dùng đang đăng nhập)
-authRouter.post(
-    "/change-password",
-    authMiddleware.auth,
-    validate(resetPasswordParamsSchema),
-    authController.changePassword,
-);
+// authRouter.post(
+//     "/change-password",
+//     authMiddleware.auth,
+//     validate(resetPasswordParamsSchema),
+//     authController.changePassword,
+// );
 export default authRouter;
