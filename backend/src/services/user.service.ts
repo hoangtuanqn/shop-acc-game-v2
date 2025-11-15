@@ -1,4 +1,4 @@
-import { TokenType, UserVerifyStatus } from "~/constants/enums";
+import { ExpiresInTokenType, TokenType } from "~/constants/enums";
 import { HTTP_STATUS } from "~/constants/httpStatus";
 import { ErrorWithStatus } from "~/models/Error";
 import userRespository from "~/repositories/user.repository";
@@ -6,8 +6,9 @@ import AlgoCrypoto from "~/utils/crypto";
 import AlgoJwt from "~/utils/jwt";
 import { ForgotPasswordRequestBody, LoginRequestBody, RegisterRequestBody } from "~/models/requests/user.request";
 import Helpers from "~/utils/helpers";
+import redisService from "./redis.service";
 
-class UserService {
+class AuthService {
     public create = async (data: RegisterRequestBody) => {
         const { email, username, password } = data;
 
@@ -37,8 +38,15 @@ class UserService {
 
         const [accessToken, refreshToken] = await Promise.all([
             this.signToken({ userId: result.id, type: TokenType.AccessToken }),
-            this.signToken({ userId: result.id, type: TokenType.RefreshToken }),
+            this.signToken({
+                userId: result.id,
+                type: TokenType.RefreshToken,
+                expiresIn: ExpiresInTokenType.RefreshToken,
+            }),
         ]);
+
+        // Lưu lại refresh token vào redis
+        await this.storeRefreshTokenInRedis(result.id, refreshToken);
 
         return {
             access_token: accessToken,
@@ -63,8 +71,11 @@ class UserService {
             this.signToken({
                 userId: accountExisted.id,
                 type: TokenType.RefreshToken,
+                expiresIn: ExpiresInTokenType.RefreshToken,
             }),
         ]);
+        // Lưu lại refresh token vào redis
+        await this.storeRefreshTokenInRedis(accountExisted.id, refreshToken);
 
         return {
             access_token: accessToken,
@@ -97,7 +108,6 @@ class UserService {
             });
         }
         const payload = await AlgoJwt.verifyToken({ token });
-        console.log(payload);
 
         if (!Helpers.isTypeToken(payload, TokenType.ForgotPasswordToken)) {
             throw new ErrorWithStatus({
@@ -121,12 +131,24 @@ class UserService {
         }
     };
 
-    private signToken = ({ userId, type }: { userId: string; type: TokenType }) => {
+    private signToken = ({
+        userId,
+        type,
+        expiresIn = ExpiresInTokenType.AccessToken * 1000,
+    }: {
+        userId: string;
+        type: TokenType;
+        expiresIn?: number;
+    }) => {
         return AlgoJwt.signToken({
             payload: { type, userId },
-            options: { expiresIn: "2h" },
+            options: { expiresIn: expiresIn * 1000 }, // convert seconds to mili seconds
         }) as Promise<string>;
     };
+
+    private storeRefreshTokenInRedis = async (token: string, userId: string) => {
+        return await redisService.set(`refreshToken:${userId}`, token, ExpiresInTokenType.RefreshToken);
+    };
 }
-const userService = new UserService();
-export default userService;
+const authService = new AuthService();
+export default authService;
