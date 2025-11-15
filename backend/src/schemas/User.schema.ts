@@ -1,15 +1,12 @@
 import { v7 as uuidv7 } from "uuid";
-enum Role {
-    USER = "USER",
-    ADMIN = "ADMIN",
-}
+import { RoleType } from "~/constants/enums";
 
 interface UserType {
     id?: string;
     username: string;
     email: string;
     password: string;
-    role?: Role;
+    role?: RoleType;
     balance?: bigint;
     totalDeposited?: bigint;
     items?: bigint;
@@ -25,7 +22,7 @@ class User {
     username: string;
     email: string;
     password: string;
-    role: Role;
+    role: RoleType;
     balance: bigint;
     totalDeposited: bigint;
     items: bigint;
@@ -40,7 +37,7 @@ class User {
         this.username = user.username;
         this.email = user.email;
         this.password = user.password;
-        this.role = user.role || Role.USER;
+        this.role = user.role || RoleType.USER;
         this.balance = user.balance || BigInt(0);
         this.totalDeposited = user.totalDeposited || BigInt(0);
         this.items = user.items || BigInt(0);

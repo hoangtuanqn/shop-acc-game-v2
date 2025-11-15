@@ -1,33 +1,41 @@
 import { Router } from "express";
-import {
-    handleForgotController,
-    handleGetLinkResetPasswordController,
-    handleLoginController,
-    handleRegisterController,
-    handleResetPasswordController,
-} from "~/controllers/users.controllers";
+import { TokenType } from "~/constants/enums";
+import * as authController from "~/controllers/users.controllers";
+import * as authMiddleware from "~/middlewares/auth.middlewares";
 import {
     forgotPasswordSchema,
     loginSchema,
     registerSchema,
     resetPasswordParamsSchema,
     resetPasswordSchema,
+    verifyEmailParamsSchema,
 } from "~/models/auth/auth.schema";
 import { validate } from "~/utils/validation";
 
 const authRouter = Router();
 
 // định nghĩa routing
-authRouter.post("/register", validate(registerSchema), handleRegisterController);
-authRouter.post("/login", validate(loginSchema), handleLoginController);
-authRouter.post("/forgot-password", validate(forgotPasswordSchema), handleForgotController);
-authRouter.get("/reset-password/:token", validate(resetPasswordParamsSchema), handleGetLinkResetPasswordController);
-authRouter.post(
+authRouter.post("/register", validate(registerSchema), authController.register);
+authRouter.post("/login", validate(loginSchema), authController.login);
+authRouter.post("/forgot-password", validate(forgotPasswordSchema), authController.forgotPassword);
+authRouter.get("/verify-email/:token", validate(verifyEmailParamsSchema), authController.verifyEmail);
+authRouter.get(
     "/reset-password/:token",
     validate(resetPasswordParamsSchema),
-    handleGetLinkResetPasswordController,
-    validate(resetPasswordSchema),
-    handleResetPasswordController,
+    authMiddleware.verifyToken(TokenType.ForgotPasswordToken),
+    authController.verifyResetPasswordToken,
 );
-// authRouter.post("/change-password", validate(loginSchema), handleLoginController);
+authRouter.post(
+    "/reset-password/:token",
+    validate(resetPasswordSchema),
+    authMiddleware.verifyToken(TokenType.ForgotPasswordToken),
+    authController.resetPassword,
+);
+// Thay đổi mk (lúc người dùng đang đăng nhập)
+authRouter.post(
+    "/change-password",
+    authMiddleware.auth,
+    validate(resetPasswordParamsSchema),
+    authController.changePassword,
+);
 export default authRouter;

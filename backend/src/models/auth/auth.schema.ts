@@ -25,6 +25,7 @@ export const registerSchema = z.object({
             path: ["confirm_password"],
         }),
 });
+
 export const loginSchema = z.object({
     body: z.object({
         username: z.string().trim().nonempty(),
@@ -42,6 +43,9 @@ export const resetPasswordParamsSchema = z.object({
     }),
 });
 export const resetPasswordSchema = z.object({
+    params: z.object({
+        token: jwtSchema,
+    }),
     body: z
         .object({
             password: passwordSchema,
@@ -51,4 +55,25 @@ export const resetPasswordSchema = z.object({
             message: "Mật khẩu nhập lại không khớp",
             path: ["confirm_password"],
         }),
+});
+export const changePasswordSchema = z.object({
+    body: z
+        .object({
+            old_password: z.string().trim().nonempty(),
+            new_password: passwordSchema,
+            confirm_new_password: z.string().trim().nonempty(),
+        })
+        .refine((data) => data.old_password === data.new_password, {
+            message: "Mật khẩu mới phải khác với mật khẩu cũ!",
+            path: ["confirm_new_password"],
+        })
+        .refine((data) => data.new_password === data.confirm_new_password, {
+            message: "Mật khẩu nhập lại không khớp!",
+            path: ["confirm_new_password"],
+        }),
+});
+export const verifyEmailParamsSchema = z.object({
+    params: z.object({
+        token: jwtSchema,
+    }),
 });

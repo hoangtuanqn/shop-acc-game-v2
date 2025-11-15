@@ -10,3 +10,7 @@ export enum TokenType {
     ForgotPasswordToken,
     EmailVerifyToken,
 }
+export enum RoleType {
+    ADMIN = "ADMIN",
+    USER = "USER",
+}

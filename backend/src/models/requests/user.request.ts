@@ -1,5 +1,6 @@
 import { JwtPayload } from "jsonwebtoken";
-import { TokenType, UserVerifyStatus } from "~/constants/enums";
+import { RoleType, TokenType } from "~/constants/enums";
+import z from "zod/v3";
 import {
     forgotPasswordSchema,
     loginSchema,
@@ -7,7 +8,6 @@ import {
     resetPasswordParamsSchema,
     resetPasswordSchema,
 } from "../auth/auth.schema";
-import z from "zod/v3";
 
 export type RegisterRequestBody = z.infer<typeof registerSchema>["body"];
 export type LoginRequestBody = z.infer<typeof loginSchema>["body"];
@@ -17,7 +17,7 @@ export type ResetPasswordRequestBody = z.infer<typeof resetPasswordSchema>["body
 export interface TokenPayload extends JwtPayload {
     userId: string;
     type: TokenType;
-    verify: UserVerifyStatus;
+    role: RoleType;
     exp: number;
     iat: number;
 }

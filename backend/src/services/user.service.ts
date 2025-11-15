@@ -36,8 +36,8 @@ class UserService {
         });
 
         const [accessToken, refreshToken] = await Promise.all([
-            this.signToken({ userId: result.id, verify: UserVerifyStatus.Verified, type: TokenType.AccessToken }),
-            this.signToken({ userId: result.id, verify: UserVerifyStatus.Verified, type: TokenType.RefreshToken }),
+            this.signToken({ userId: result.id, type: TokenType.AccessToken }),
+            this.signToken({ userId: result.id, type: TokenType.RefreshToken }),
         ]);
 
         return {
@@ -58,12 +58,10 @@ class UserService {
         const [accessToken, refreshToken] = await Promise.all([
             this.signToken({
                 userId: accountExisted.id,
-                verify: UserVerifyStatus.Verified,
                 type: TokenType.AccessToken,
             }),
             this.signToken({
                 userId: accountExisted.id,
-                verify: UserVerifyStatus.Verified,
                 type: TokenType.RefreshToken,
             }),
         ]);
@@ -80,7 +78,6 @@ class UserService {
         if (accountExisted) {
             const forgotPasswordToken = await this.signToken({
                 userId: accountExisted.id,
-                verify: UserVerifyStatus.Verified,
                 type: TokenType.ForgotPasswordToken,
             });
 
@@ -113,13 +110,20 @@ class UserService {
     };
     public resetPassword = async (token: string, password: string) => {
         const passwordHash = await AlgoCrypoto.hashPassword(password);
-        const resetPassword = await userRespository.resetPasswordByToken(token, passwordHash);
-        return resetPassword;
+        try {
+            const resetPassword = await userRespository.resetPasswordByToken(token, passwordHash);
+            return resetPassword;
+        } catch (error) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Không tìm thấy thông tin cần đặt lại mật khẩu!",
+            });
+        }
     };
 
-    private signToken = ({ userId, verify, type }: { userId: string; verify: UserVerifyStatus; type: TokenType }) => {
+    private signToken = ({ userId, type }: { userId: string; type: TokenType }) => {
         return AlgoJwt.signToken({
-            payload: { type, userId, verify },
+            payload: { type, userId },
             options: { expiresIn: "2h" },
         }) as Promise<string>;
     };
