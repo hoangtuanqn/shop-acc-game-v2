@@ -110,6 +110,18 @@ class AuthService {
         }
         return await this.signAccesAndRefreshToken(userId);
     };
+    public changePassword = async (userId: string, oldPassword: string, newPassword: string) => {
+        const user = await userRespository.findById(userId);
+        const isMatchPassword = user && (await AlgoCrypoto.verifyPassword(oldPassword, user.password));
+        if (!isMatchPassword) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.FORBIDDEN,
+                message: "Mật khẩu cũ không chính xác!",
+            });
+        }
+        const passwordHash = await AlgoCrypoto.hashPassword(newPassword);
+        await userRespository.changePassword(userId, passwordHash);
+    };
 
     private signToken = ({
         userId,

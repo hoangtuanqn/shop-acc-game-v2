@@ -63,9 +63,9 @@ export const changePasswordSchema = z.object({
             new_password: passwordSchema,
             confirm_new_password: z.string().trim().nonempty(),
         })
-        .refine((data) => data.old_password === data.new_password, {
+        .refine((data) => data.old_password !== data.new_password, {
             message: "Mật khẩu mới phải khác với mật khẩu cũ!",
-            path: ["confirm_new_password"],
+            path: ["new_password"],
         })
         .refine((data) => data.new_password === data.confirm_new_password, {
             message: "Mật khẩu nhập lại không khớp!",

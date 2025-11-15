@@ -99,21 +99,22 @@ export const verifyEmail = async (req: Request<VerifyEmailRequestParams>, res: R
         return next(error);
     }
 };
-// export const changePassword = async (
-//     req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
-//     res: Response,
-//     next: NextFunction,
-// ) => {
-//     const {  } = req.body;
-//     try {
-//         await userService.resetPassword(token, password);
-//         return res.status(HTTP_STATUS.OK).json({
-//             message: "Đã đặt lại mật khẩu thành công!",
-//         });
-//     } catch (error) {
-//         return next(error);
-//     }
-// };
+export const changePassword = async (
+    req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
+    res: Response,
+    next: NextFunction,
+) => {
+    const { old_password: oldPassword, new_password: newPassword } = req.body;
+    const userId = req.userId as string;
+    try {
+        await userService.changePassword(userId, oldPassword, newPassword);
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Đã đặt lại mật khẩu thành công!",
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
 export const refreshToken = async (
     req: Request<ResetPasswordRequestParams, any, RefreshTokenRequestBody>,
     res: Response,

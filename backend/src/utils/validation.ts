@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { AnyZodObject, ZodError } from "zod/v3";
 import { HTTP_STATUS } from "~/constants/httpStatus";
+import Helpers from "./helpers";
 
 export const validate = (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -19,8 +20,10 @@ export const validate = (schema: AnyZodObject) => (req: Request, res: Response, 
     } catch (err) {
         if (err instanceof ZodError) {
             const errors: string[] = [];
+            // console.log(Array(...err.issues));
+
             for (let error of Array(...err.issues)) {
-                errors.push(error.message);
+                errors.push(Helpers.converFirstUpper(`${error.path.join(" ")} ${error.message}`));
             }
             return res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,

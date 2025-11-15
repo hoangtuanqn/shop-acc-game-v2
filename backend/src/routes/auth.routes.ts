@@ -3,6 +3,7 @@ import { TokenType } from "~/constants/enums";
 import * as authController from "~/controllers/users.controllers";
 import * as authMiddleware from "~/middlewares/auth.middlewares";
 import {
+    changePasswordSchema,
     forgotPasswordSchema,
     loginSchema,
     refreshTokenSchema,
@@ -39,10 +40,5 @@ authRouter.post(
     authController.resetPassword,
 );
 // Thay đổi mk (lúc người dùng đang đăng nhập)
-// authRouter.post(
-//     "/change-password",
-//     authMiddleware.auth,
-//     validate(resetPasswordParamsSchema),
-//     authController.changePassword,
-// );
+authRouter.post("/change-password", authMiddleware.auth, validate(changePasswordSchema), authController.changePassword);
 export default authRouter;
