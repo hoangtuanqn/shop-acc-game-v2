@@ -25,3 +25,4 @@ class GameCategoryRepository {
 
 const gameCategoryRepository = new GameCategoryRepository();
 export default gameCategoryRepository;
+

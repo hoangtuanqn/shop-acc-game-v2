@@ -40,17 +40,33 @@ model PasswordHistory {
 }
 
 model GameCategories {
-  id          String       @id @default(uuid())
+  id          String    @id @default(uuid())
   name        String    @db.VarChar(255)
   slug        String    @db.VarChar(255)
-  thumbnail   String   @db.VarChar(255)
+  thumbnail   String    @db.VarChar(255)
   active      Int   @default(0)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
+  gameGroups  GameGroups[]
+  
   @@map("game_categories")
 }
 
+model GameGroups {
+  id          String    @id @default(uuid())
+  categoryId  String    @map("category_id") @db.VarChar(255)
+  title       String    @db.VarChar(255)
+  slug        String    @db.VarChar(255)
+  thumbnail   String    @db.VarChar(255)
+  active      Int   @default(0)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  category GameCategories @relation(fields: [categoryId], references: [id])
+
+  @@map("game_groups")
+}
 
 enum Role {
   USER
