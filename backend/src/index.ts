@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import userRouter from "./routes/user.routes";
+import gameCategoriesRouter from "~/routes/game-categories.routes";
 import "dotenv/config"; // thêm cái này để có thể sử dụng biến môi trường (nếu k sẽ là underfined), import ở file này thì tất cả file con đều được áp dụng
 import { defaultErrorHandler } from "./middlewares/error.middlewares";
 import { defaultSuccessHandler } from "./middlewares/success.middlewares";
@@ -15,6 +16,7 @@ redisClient.connect();
 // sau khi đã định nghĩa routing với biến "router" thì phải sử dụng app.use( .... ) để chạy các routing đã cài trong "router"
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
+app.use("/game-categories", gameCategoriesRouter);
 // handler xử lý lỗi cho cả hệ thống
 app.use(defaultErrorHandler);
 app.use(defaultSuccessHandler);

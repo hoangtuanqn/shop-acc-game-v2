@@ -10,7 +10,7 @@ import {
     resetPasswordParamsSchema,
     resetPasswordSchema,
     verifyEmailParamsSchema,
-} from "../auth/auth.schema";
+} from "../schema/auth.schema";
 
 export type RegisterRequestBody = z.infer<typeof registerSchema>["body"];
 export type LoginRequestBody = z.infer<typeof loginSchema>["body"];
