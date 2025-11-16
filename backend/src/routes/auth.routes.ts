@@ -11,7 +11,7 @@ import {
     resetPasswordParamsSchema,
     resetPasswordSchema,
     verifyEmailParamsSchema,
-} from "~/models/schema/auth.schema";
+} from "~/models/rules/auth.rules";
 import { validate } from "~/utils/validation";
 
 const authRouter = Router();

@@ -1,6 +1,6 @@
 import prisma from "~/configs/prisma";
 import { MAX_HISTORY_PASSWORD } from "~/constants/enums";
-import PasswordHistory from "~/schemas/password-history";
+import PasswordHistory from "~/schemas/password-history.schema";
 import AlgoCrypoto from "~/utils/crypto";
 
 class PwsHistoryRepository {

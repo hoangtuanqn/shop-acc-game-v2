@@ -4,7 +4,7 @@ import {
     gameCategorySchema,
     editGameCategorySchema,
     deleteGameCategorySchema,
-} from "~/models/schema/game-category.schema";
+} from "~/models/rules/game-category.rules";
 import { validate } from "~/utils/validation";
 
 const gameCategoryRouter = Router();

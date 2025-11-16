@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 // parse body request
 app.use(express.json()); // hoặc dùng app.use(bodyParser.json());, nhưng phải npm i bodyParser về nữa
-app.use(limiterMiddleware);
+// app.use(limiterMiddleware);
 redisClient.connect();
 // sau khi đã định nghĩa routing với biến "router" thì phải sử dụng app.use( .... ) để chạy các routing đã cài trong "router"
 app.use("/auth", authRouter);

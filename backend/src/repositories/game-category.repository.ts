@@ -1,5 +1,6 @@
 import prisma from "~/configs/prisma";
-import GameCategory from "~/schemas/game-category";
+import { EditGameCategoryRequestBody } from "~/models/requests/game-category.request";
+import GameCategory from "~/schemas/game-category.schema";
 
 class GameCategoryRepository {
     create = async (data: { name: string; slug: string; thumbnail: string; active: number }) => {
@@ -9,20 +10,33 @@ class GameCategoryRepository {
         return result;
     };
 
-    edit = async (id: string, data: { name: string; slug: string; thumbnail: string; active: number }) => {
+    edit = async (id: string, data: EditGameCategoryRequestBody) => {
         return prisma.gameCategories.update({
             where: { id },
             data,
         });
     };
-    
+
     delete = async (id: string) => {
         return prisma.gameCategories.delete({
             where: { id },
-        })
-    }
+        });
+    };
+
+    findById = async (id: string) => {
+        const result = await prisma.gameCategories.findUnique({
+            where: { id },
+        });
+        return result;
+    };
+
+    hasGameGroups = async (categoryId: string) => {
+        const count = await prisma.gameGroups.count({
+            where: { categoryId },
+        });
+        return count > 0;
+    };
 }
 
 const gameCategoryRepository = new GameCategoryRepository();
 export default gameCategoryRepository;
-

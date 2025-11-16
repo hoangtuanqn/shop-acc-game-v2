@@ -41,8 +41,8 @@ model PasswordHistory {
 
 model GameCategories {
   id          String    @id @default(uuid())
-  name        String    @db.VarChar(255)
-  slug        String    @db.VarChar(255)
+  name        String    @db.VarChar(30)
+  slug        String    @unique @db.VarChar(255)
   thumbnail   String    @db.VarChar(255)
   active      Int   @default(0)
   createdAt   DateTime  @default(now()) @map("created_at")
@@ -57,7 +57,7 @@ model GameGroups {
   id          String    @id @default(uuid())
   categoryId  String    @map("category_id") @db.VarChar(255)
   title       String    @db.VarChar(255)
-  slug        String    @db.VarChar(255)
+  slug        String    @unique @db.VarChar(255)
   thumbnail   String    @db.VarChar(255)
   active      Int   @default(0)
   createdAt   DateTime  @default(now()) @map("created_at")
