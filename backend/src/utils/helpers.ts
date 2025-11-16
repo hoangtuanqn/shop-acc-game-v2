@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { TokenType } from "~/constants/enums";
 import { TokenPayload } from "~/models/requests/user.request";
 
@@ -8,4 +9,11 @@ export default class Helpers {
     static converFirstUpper = (val: string): string => {
         return val.charAt(0).toUpperCase() + val.slice(1).toLocaleLowerCase();
     };
+    static generateSlug(name: string) {
+        const baseSlug = name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+        const randomStr = crypto.randomBytes(3).toString("hex");
+        return `${baseSlug}-${randomStr}`;
+    }
 }

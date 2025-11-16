@@ -1,6 +1,7 @@
 import { v7 as uuidv7 } from "uuid";
+import Helpers from "~/utils/helpers";
 
-export interface GameCategoriesType {
+export interface GameCategoryType {
     id?: string;
     name: string;
     slug?: string;
@@ -10,7 +11,7 @@ export interface GameCategoriesType {
     updatedAt?: Date;
 }
 
-class GameCategories {
+class GameCategory {
     id: string;
     name: string;
     slug: string;
@@ -19,10 +20,10 @@ class GameCategories {
     createdAt: Date;
     updatedAt: Date;
 
-    constructor(category: GameCategoriesType) {
+    constructor(category: GameCategoryType) {
         this.id = category.id || uuidv7();
         this.name = category.name;
-        this.slug = category.slug || "";
+        this.slug = category.slug || Helpers.generateSlug(this.name);
         this.thumbnail = category.thumbnail || "";
         this.active = category.active ?? 0;
         this.createdAt = category.createdAt || new Date();
@@ -30,5 +31,4 @@ class GameCategories {
     }
 }
 
-export default GameCategories;
-
+export default GameCategory;

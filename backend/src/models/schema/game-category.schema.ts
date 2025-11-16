@@ -1,6 +1,6 @@
 import z from "zod/v3";
 
-export const gameCategoriesSchema = z.object({
+export const gameCategorySchema = z.object({
     body: z.object({
         name: z
             .string()
@@ -12,7 +12,7 @@ export const gameCategoriesSchema = z.object({
         active: z
             .number()
             .refine((val) => val === 0 || val === 1, {
-                message: "Trạng thái hoạt động phải là 0 hoặc 1",
+                message: "Trạng thái không hợp lệ",
             })
             .default(1),
         slug: z.string().trim().optional(),
