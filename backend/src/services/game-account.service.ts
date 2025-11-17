@@ -41,6 +41,25 @@ class GameAccountService {
 
         return await gameAccountRepository.edit(id, data);
     };
+
+    public delete = async (id: string) => {
+        const gameAccountExisted = await gameAccountRepository.findByAccountId(id);
+        if (!gameAccountExisted) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Tài khoản không tồn tại trong hệ thống!",
+            });
+        }
+
+        if (gameAccountExisted.status === 1) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.BAD_REQUEST,
+                message: "Không thể xóa account đã bán!",
+            });
+        }
+
+        return await gameAccountRepository.delete(id);
+    };
 }
 
 const gameAccountService = new GameAccountService();

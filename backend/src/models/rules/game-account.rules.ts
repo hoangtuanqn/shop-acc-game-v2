@@ -8,9 +8,6 @@ export const gameAccountSchema = z.object({
         price: z.union([z.bigint(), z.number()]).refine((val) => val > 0, {
             message: "Giá tiền phải lớn hơn 0",
         }),
-        status: z.number().refine((val) => val === 0 || val === 1, {
-            message: "Trạng thái không hợp lệ",
-        }),
         buyerId: z.string().uuid().optional(),
         details: z.string().optional(),
         thumb: z.string().url("Thumbnail phải là một URL hợp lệ"),
@@ -31,14 +28,17 @@ export const editGameAccountSchema = z.object({
                 message: "Giá tiền phải lớn hơn 0",
             })
             .optional(),
-        status: z.number().refine((val) => val === 0 || val === 1, {
-            message: "Trạng thái không hợp lệ",
-        }),
         buyerId: z.string().uuid().optional(),
         details: z.string().optional(),
         thumb: z.string().url("Thumbnail phải là một URL hợp lệ"),
         images: z.string(),
     }),
+    params: z.object({
+        id: z.string().uuid("ID account không hợp lệ"),
+    }),
+});
+
+export const deleteGameAccountSchema = z.object({
     params: z.object({
         id: z.string().uuid("ID account không hợp lệ"),
     }),

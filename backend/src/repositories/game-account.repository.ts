@@ -36,6 +36,12 @@ class GameAccountRepository {
         });
         return result;
     };
+
+    delete = async (id: string) => {
+        return prisma.gameAccounts.delete({
+            where: { id },
+        });
+    };
 }
 
 const gameAccountRepository = new GameAccountRepository();
