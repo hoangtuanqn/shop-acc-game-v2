@@ -1,5 +1,7 @@
 import z from "zod/v3";
-import { gameAccountSchema } from "~/models/rules/game-account.rules";
+import { editGameAccountSchema, gameAccountSchema } from "~/models/rules/game-account.rules";
 
 
 export type CreateGameAccountRequestBody = z.infer<typeof gameAccountSchema>["body"];
+
+export type EditGameAccountRequestBody = z.infer<typeof editGameAccountSchema>['body'];

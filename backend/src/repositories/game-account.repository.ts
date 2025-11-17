@@ -1,6 +1,6 @@
 import { any } from "zod";
 import prisma from "~/configs/prisma";
-import { CreateGameAccountRequestBody } from "~/models/requests/game-account.request";
+import { CreateGameAccountRequestBody, EditGameAccountRequestBody } from "~/models/requests/game-account.request";
 import GameAccount from "~/schemas/game-account.schema";
 
 class GameAccountRepository {
@@ -17,6 +17,21 @@ class GameAccountRepository {
 
     findByGroupId = async (id: string) => {
         const result = await prisma.gameGroups.findUnique({
+            where: { id },
+        });
+        return result;
+    };
+
+    edit = async (id: string, data: EditGameAccountRequestBody) => {
+        const result = await prisma.gameAccounts.update({
+            where: { id },
+            data,
+        });
+        return result;
+    };
+
+    findByAccountId = async (id: string) => {
+        const result = await prisma.gameAccounts.findUnique({
             where: { id },
         });
         return result;
