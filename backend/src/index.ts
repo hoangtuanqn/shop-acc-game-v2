@@ -2,6 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 import userRouter from "./routes/user.routes";
 import gameCategoryRouter from "~/routes/game-category.routes";
 import gameGroupRouter from "~/routes/game-group.routes";
+import gameAccountRouter from "~/routes/game-account.routes";
+
 import "dotenv/config"; // thêm cái này để có thể sử dụng biến môi trường (nếu k sẽ là underfined), import ở file này thì tất cả file con đều được áp dụng
 import { defaultErrorHandler } from "./middlewares/error.middlewares";
 import { defaultSuccessHandler } from "./middlewares/success.middlewares";
@@ -19,6 +21,7 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/game-categories", gameCategoryRouter);
 app.use("/game-groups", gameGroupRouter);
+app.use('/game-accounts', gameAccountRouter);
 // handler xử lý lỗi cho cả hệ thống
 app.use(defaultErrorHandler);
 app.use(defaultSuccessHandler);

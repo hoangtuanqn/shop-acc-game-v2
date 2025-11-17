@@ -61,8 +61,32 @@ CREATE TABLE `game_groups` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `game_accounts` (
+    `id` VARCHAR(191) NOT NULL,
+    `group_id` VARCHAR(255) NOT NULL,
+    `accountName` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
+    `price` BIGINT NOT NULL,
+    `status` INTEGER NOT NULL DEFAULT 0,
+    `buyer_id` VARCHAR(255) NULL,
+    `details` TEXT NOT NULL,
+    `thumb` VARCHAR(255) NOT NULL,
+    `images` TEXT NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `password_histories` ADD CONSTRAINT `password_histories_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `game_groups` ADD CONSTRAINT `game_groups_category_id_fkey` FOREIGN KEY (`category_id`) REFERENCES `game_categories`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `game_accounts` ADD CONSTRAINT `game_accounts_group_id_fkey` FOREIGN KEY (`group_id`) REFERENCES `game_groups`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `game_accounts` ADD CONSTRAINT `game_accounts_buyer_id_fkey` FOREIGN KEY (`buyer_id`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

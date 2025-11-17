@@ -37,7 +37,7 @@ export const editGameGroupSchema = z.object({
             .default(1),
     }),
     params: z.object({
-        id: z.string().uuid("ID group không hợp lệ"),
+        id: z.string().uuid("ID category không hợp lệ"),
     }),
 });
 

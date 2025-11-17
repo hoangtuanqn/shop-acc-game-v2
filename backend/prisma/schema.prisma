@@ -23,6 +23,7 @@ model User {
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
   passwordHistories PasswordHistory[]
+  gameAccounts      GameAccounts[]
 
   @@map("users")
 }
@@ -44,7 +45,7 @@ model GameCategories {
   name        String    @db.VarChar(30)
   slug        String    @unique @db.VarChar(255)
   thumbnail   String    @db.VarChar(255)
-  active      Int   @default(0)
+  active      Int       @default(0)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
@@ -59,14 +60,37 @@ model GameGroups {
   title       String    @db.VarChar(255)
   slug        String    @unique @db.VarChar(255)
   thumbnail   String    @db.VarChar(255)
-  active      Int   @default(0)
+  active      Int       @default(0)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  gameAccounts  GameAccounts[]
 
   category GameCategories @relation(fields: [categoryId], references: [id])
 
   @@map("game_groups")
 }
+
+model GameAccounts {
+  id          String    @id @default(uuid())
+  groupId     String    @map("group_id") @db.VarChar(255)
+  accountName String    @db.VarChar(255)
+  password    String    @db.VarChar(255)
+  price       BigInt
+  status      Int       @default(0)
+  buyerId     String?   @map("buyer_id") @db.VarChar(255)
+  details     String    @db.Text
+  thumb       String    @db.VarChar(255)
+  images      String    @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  group       GameGroups @relation(fields: [groupId], references: [id])
+  user        User?      @relation(fields: [buyerId], references: [id])
+
+  @@map("game_accounts")
+}
+
 
 enum Role {
   USER

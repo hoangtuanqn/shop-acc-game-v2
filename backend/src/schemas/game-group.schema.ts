@@ -6,8 +6,8 @@ export interface GameGroupType {
     categoryId: string;
     title: string;
     slug?: string;
-    thumbnail?: string;
-    active?: number;
+    thumbnail: string;
+    active: number;
     createdAt?: Date;
     updatedAt?: Date;
 }

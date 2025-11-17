@@ -3,15 +3,13 @@ import { ErrorWithStatus } from "~/models/Error";
 import gameGroupRepository from "~/repositories/game-group.repository";
 import { CreateGameGroupRequestBody } from "~/models/requests/game-group.request";
 import { EditGameGroupRequestBody } from "~/models/requests/game-group.request";
-import Helpers from "~/utils/helpers";
-import { log } from "console";
 
 class GameGroupService {
     public create = async (data: CreateGameGroupRequestBody) => {
         const { categoryId, title, thumbnail, active } = data;
 
-        const gameGroupExisted = await gameGroupRepository.findByCategoryId(categoryId);
-        if (!gameGroupExisted) {
+        const gameCategoryExisted = await gameGroupRepository.findByCategoryId(categoryId);
+        if (!gameCategoryExisted) {
             throw new ErrorWithStatus({
                 status: HTTP_STATUS.NOT_FOUND,
                 message: "Danh mục này không tồn tại trong hệ thống!",
