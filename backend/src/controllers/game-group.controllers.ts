@@ -57,3 +57,16 @@ export const deleteGameGroup = async (
         return next(error);
     }
 };
+
+export const getGameGroups = async (req: Request<ParamsDictionary, any, any>, res: Response, next: NextFunction) => {
+    try {
+        const categoryId = req.params.categoryId;
+        const result = await gameGroupService.getGameGroups(categoryId);
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy danh sách group thành công",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};

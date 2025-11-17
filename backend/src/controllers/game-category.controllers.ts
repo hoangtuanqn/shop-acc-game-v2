@@ -56,3 +56,19 @@ export const deleteGameCategory = async (
         return next(error);
     }
 };
+
+export const getAllGameCategorys = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const result = await gameCategoryService.getAll();
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy danh sách danh mục thành công",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};

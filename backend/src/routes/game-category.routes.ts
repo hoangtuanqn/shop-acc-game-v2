@@ -13,4 +13,7 @@ gameCategoryRouter.post("/", validate(gameCategorySchema), gameCategoryControlle
 gameCategoryRouter.put("/:id", validate(editGameCategorySchema), gameCategoryController.editGameCategory);
 
 gameCategoryRouter.delete("/:id", validate(deleteGameCategorySchema), gameCategoryController.deleteGameCategory);
+
+//view
+gameCategoryRouter.get("/", gameCategoryController.getAllGameCategorys);
 export default gameCategoryRouter;

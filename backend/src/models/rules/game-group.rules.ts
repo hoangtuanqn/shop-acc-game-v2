@@ -46,3 +46,10 @@ export const delCategoryParamsSchema = z.object({
         id: z.string(),
     }),
 });
+
+export const getGameGroupsByCategorySchema = z.object({
+    params: z.object({
+        categoryId: z.string().uuid("Category ID không hợp lệ"),
+    }),
+});
+

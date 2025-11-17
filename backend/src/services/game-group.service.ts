@@ -42,7 +42,6 @@ class GameGroupService {
     };
 
     public delete = async (id: string) => {
-
         const gameGroupExisted = await gameGroupRepository.findById(id);
         if (!gameGroupExisted) {
             throw new ErrorWithStatus({
@@ -52,6 +51,26 @@ class GameGroupService {
         }
 
         return await gameGroupRepository.delete(id);
+    };
+
+    public getGameGroups = async (id: string) => {
+        const result = await gameGroupRepository.getGameGroups(id);
+
+        const categoryExisted = await gameGroupRepository.findByCategoryId(id);
+        if (!categoryExisted) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Danh mục này không tồn tại trong hệ thống!",
+            });
+        }
+        if (!result) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Danh sách danh mục rỗng!",
+            });
+        }
+
+        return result;
     };
 }
 

@@ -45,7 +45,7 @@ model GameCategories {
   name        String    @db.VarChar(30)
   slug        String    @unique @db.VarChar(255)
   thumbnail   String    @db.VarChar(255)
-  active      Int       @default(0)
+  active      Int       @default(1)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 

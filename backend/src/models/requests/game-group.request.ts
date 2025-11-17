@@ -7,3 +7,5 @@ export type EditGameGroupRequestBody = z.infer<typeof editGameGroupSchema>["body
 export type EditGameGroupRequestParams = z.infer<typeof editGameGroupSchema>["params"];
 
 export type DeleteGameGroupRequestParams = z.infer<typeof delCategoryParamsSchema>["params"];
+
+

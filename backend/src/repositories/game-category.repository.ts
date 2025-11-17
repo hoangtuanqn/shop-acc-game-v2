@@ -36,7 +36,21 @@ class GameCategoryRepository {
         });
         return count > 0;
     };
+
+    getAll = async () => {
+        const result = await prisma.gameCategories.findMany({
+            where: {
+                active: 1,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+        return result;
+    };
 }
+
+
 
 const gameCategoryRepository = new GameCategoryRepository();
 export default gameCategoryRepository;

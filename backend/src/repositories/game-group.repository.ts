@@ -37,6 +37,19 @@ class GameGroupRepository {
             where: { id },
         });
     };
+
+    getGameGroups = async (id: string) => {
+        const result = await prisma.gameGroups.findMany({
+            where: {
+                categoryId: id,
+                active: 1
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+        return result;
+    };
 }
 
 const gameGroupRepository = new GameGroupRepository();
