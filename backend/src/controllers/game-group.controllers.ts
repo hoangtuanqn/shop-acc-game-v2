@@ -6,6 +6,7 @@ import {
     DeleteGameGroupRequestParams,
     EditGameGroupRequestBody,
     EditGameGroupRequestParams,
+
 } from "~/models/requests/game-group.request";
 import { HTTP_STATUS } from "~/constants/httpStatus";
 
@@ -58,7 +59,11 @@ export const deleteGameGroup = async (
     }
 };
 
-export const getGameGroups = async (req: Request<ParamsDictionary, any, any>, res: Response, next: NextFunction) => {
+export const getGameGroups = async (
+    req: Request<ParamsDictionary, any, any>,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const categoryId = req.params.categoryId;
         const result = await gameGroupService.getGameGroups(categoryId);

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as gameGroupController from "~/controllers/game-group.controllers";
+import { checkAdmin } from "~/middlewares/checkAdmin.middlewares";
 import {
     delCategoryParamsSchema,
     editGameGroupSchema,
@@ -10,10 +11,10 @@ import { validate } from "~/utils/validation";
 
 const gameGroupRouter = Router();
 
-gameGroupRouter.post("/", validate(gameGroupSchema), gameGroupController.createGameGroup);
-gameGroupRouter.put("/:id", validate(editGameGroupSchema), gameGroupController.editGameGroup);
+gameGroupRouter.post("/",checkAdmin, validate(gameGroupSchema), gameGroupController.createGameGroup);
+gameGroupRouter.put("/:id",checkAdmin, validate(editGameGroupSchema), gameGroupController.editGameGroup);
 
-gameGroupRouter.delete("/:id", validate(delCategoryParamsSchema), gameGroupController.deleteGameGroup);
+gameGroupRouter.delete("/:id", checkAdmin, validate(delCategoryParamsSchema), gameGroupController.deleteGameGroup);
 
 //view - lấy groups theo categoryId
 gameGroupRouter.get(

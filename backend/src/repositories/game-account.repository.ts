@@ -1,13 +1,14 @@
-import { any } from "zod";
 import prisma from "~/configs/prisma";
 import { CreateGameAccountRequestBody, EditGameAccountRequestBody } from "~/models/requests/game-account.request";
 import GameAccount from "~/schemas/game-account.schema";
+import { paginate } from "~/utils/pagination";
 
 class GameAccountRepository {
     create = async (groupId: string, data: CreateGameAccountRequestBody) => {
         const gameAccount = new GameAccount({
             ...data,
             groupId,
+            images: JSON.stringify(data.images),
         });
         const result = await prisma.gameAccounts.create({
             data: gameAccount,
@@ -41,6 +42,19 @@ class GameAccountRepository {
         return prisma.gameAccounts.delete({
             where: { id },
         });
+    };
+
+    getAllByGroupId = async (params: { groupId: string; page?: number; limit?: number }) => {
+        const { groupId, page, limit } = params;
+
+        const result = await paginate<any>(prisma.gameAccounts, {
+            page,
+            limit,
+            where: { groupId },
+            orderBy: { createdAt: "desc" },
+        });
+
+        return result;
     };
 }
 

@@ -10,9 +10,9 @@ interface UserType {
     email: string;
     password: string;
     role?: Role;
-    balance?: bigint;
-    totalDeposited?: bigint;
-    items?: bigint;
+    balance?: number;
+    totalDeposited?: number;
+    items?: number;
     verify?: number;
     forgotEmailToken?: string | null;
     emailVerifyToken?: string | null;
@@ -26,9 +26,9 @@ class User {
     email: string;
     password: string;
     role: Role;
-    balance: bigint;
-    totalDeposited: bigint;
-    items: bigint;
+    balance: number;
+    totalDeposited: number;
+    items: number;
     verify: number;
     forgotEmailToken: string | null;
     emailVerifyToken: string | null;
@@ -41,9 +41,9 @@ class User {
         this.email = user.email;
         this.password = user.password;
         this.role = user.role || Role.USER;
-        this.balance = user.balance || BigInt(0);
-        this.totalDeposited = user.totalDeposited || BigInt(0);
-        this.items = user.items || BigInt(0);
+        this.balance = user.balance || 0;
+        this.totalDeposited = user.totalDeposited || 0;
+        this.items = user.items || 0;
         this.verify = user.verify || 0;
         this.forgotEmailToken = user.forgotEmailToken || null;
         this.emailVerifyToken = user.emailVerifyToken || null;

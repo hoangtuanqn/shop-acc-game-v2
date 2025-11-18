@@ -21,10 +21,10 @@ app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/game-categories", gameCategoryRouter);
 app.use("/game-groups", gameGroupRouter);
-app.use('/game-accounts', gameAccountRouter);
+app.use("/game-accounts", gameAccountRouter);
 // handler xử lý lỗi cho cả hệ thống
 app.use(defaultErrorHandler);
-app.use(defaultSuccessHandler);
+// app.use(defaultSuccessHandler); // KHÔNG CẦN - Controller đã return response rồi
 
 app.listen(PORT, () => {
     console.log(`Server successfully launched on PORT ${PORT}!`);

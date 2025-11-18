@@ -7,6 +7,7 @@ import {
     CreateGameAccountRequestBody,
     DelGameAccountRequestParams,
     EditGameAccountRequestBody,
+    GetGameAccountsParams,
 } from "~/models/requests/game-account.request";
 
 export const createGameAccount = async (
@@ -15,18 +16,12 @@ export const createGameAccount = async (
     next: NextFunction,
 ) => {
     try {
-        const groupId = req.params.id; // Lấy groupId từ params
+        const groupId = req.params.id;
         const result = await gameAccountService.create(groupId, req.body);
-
-        // Convert BigInt sang string để có thể serialize JSON
-        const resultWithStringPrice = {
-            ...result,
-            price: result.price.toString(),
-        };
 
         return res.status(HTTP_STATUS.CREATED).json({
             message: "Thêm account thành công!",
-            result: resultWithStringPrice,
+            result,
         });
     } catch (error) {
         return next(error);
@@ -42,15 +37,9 @@ export const editGameAccount = async (
         const accountId = req.params.id;
         const result = await gameAccountService.edit(accountId, req.body);
 
-        // Convert BigInt sang string
-        const resultWithStringPrice = {
-            ...result,
-            price: result.price.toString(),
-        };
-
         return res.status(HTTP_STATUS.OK).json({
             message: "Cập nhật account thành công!",
-            result: resultWithStringPrice,
+            result,
         });
     } catch (error) {
         return next(error);
@@ -72,3 +61,21 @@ export const deleteGameAccount = async (
     }
 };
 
+export const getGameAccounts = async (req: Request<GetGameAccountsParams>, res: Response, next: NextFunction) => {
+    try {
+        const groupId = req.params.groupId;
+
+        // Parse query params manually vì Express req.query luôn là string
+        const page = req.query.page ? Number(req.query.page) : 1;
+        const limit = req.query.limit ? Number(req.query.limit) : 10;
+
+        const result = await gameAccountService.getAccounts(groupId, page, limit);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy danh sách accounts thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};

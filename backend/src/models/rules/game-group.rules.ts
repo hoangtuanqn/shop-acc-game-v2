@@ -51,5 +51,14 @@ export const getGameGroupsByCategorySchema = z.object({
     params: z.object({
         categoryId: z.string().uuid("Category ID không hợp lệ"),
     }),
+    query: z.object({
+        page: z
+            .string()
+            .optional()
+            .transform((val) => (val ? parseInt(val) : 1)),
+        limit: z
+            .string()
+            .optional()
+            .transform((val) => (val ? parseInt(val) : 10)),
+    }),
 });
-

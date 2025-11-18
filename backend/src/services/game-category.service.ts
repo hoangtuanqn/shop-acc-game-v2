@@ -44,12 +44,7 @@ class GameCategoryService {
 
     public getAll = async () => {
         const result = await gameCategoryRepository.getAll();
-        if (!result || result.length === 0) {
-            throw new ErrorWithStatus({
-                status: HTTP_STATUS.NOT_FOUND,
-                message: "Danh sách danh mục rỗng!",
-            });
-        }
+
         return result;
     };
 }

@@ -54,8 +54,6 @@ class GameGroupService {
     };
 
     public getGameGroups = async (id: string) => {
-        const result = await gameGroupRepository.getGameGroups(id);
-
         const categoryExisted = await gameGroupRepository.findByCategoryId(id);
         if (!categoryExisted) {
             throw new ErrorWithStatus({
@@ -63,12 +61,8 @@ class GameGroupService {
                 message: "Danh mục này không tồn tại trong hệ thống!",
             });
         }
-        if (!result) {
-            throw new ErrorWithStatus({
-                status: HTTP_STATUS.NOT_FOUND,
-                message: "Danh sách danh mục rỗng!",
-            });
-        }
+
+        const result = await gameGroupRepository.getGameGroups(id);
 
         return result;
     };

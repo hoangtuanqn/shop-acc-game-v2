@@ -8,4 +8,3 @@ export type EditGameGroupRequestParams = z.infer<typeof editGameGroupSchema>["pa
 
 export type DeleteGameGroupRequestParams = z.infer<typeof delCategoryParamsSchema>["params"];
 
-

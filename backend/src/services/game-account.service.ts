@@ -13,13 +13,6 @@ class GameAccountService {
             });
         }
 
-        if (data.price !== undefined && data.price <= 0) {
-            throw new ErrorWithStatus({
-                status: HTTP_STATUS.BAD_REQUEST,
-                message: "Giá phải lớn hơn 0!",
-            });
-        }
-
         return await gameAccountRepository.create(id, data);
     };
 
@@ -29,13 +22,6 @@ class GameAccountService {
             throw new ErrorWithStatus({
                 status: HTTP_STATUS.NOT_FOUND,
                 message: "Account này không tồn tại trong hệ thống!",
-            });
-        }
-
-        if (data.price !== undefined && data.price <= 0) {
-            throw new ErrorWithStatus({
-                status: HTTP_STATUS.BAD_REQUEST,
-                message: "Giá phải lớn hơn 0!",
             });
         }
 
@@ -59,6 +45,21 @@ class GameAccountService {
         }
 
         return await gameAccountRepository.delete(id);
+    };
+
+    public getAccounts = async (groupId: string, page?: number, limit?: number) => {
+        // 1. Kiểm tra group có tồn tại không
+        const groupExists = await gameAccountRepository.findByGroupId(groupId);
+        if (!groupExists) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Group không tồn tại!",
+            });
+        }
+
+        
+
+        return await gameAccountRepository.getAllByGroupId({ groupId, page, limit });
     };
 }
 

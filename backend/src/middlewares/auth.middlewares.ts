@@ -15,6 +15,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     const token = header.split(" ")[1];
     try {
         const payload = await AlgoJwt.verifyToken({ token });
+
         if (payload.type !== TokenType.AccessToken) {
             return res.status(HTTP_STATUS.UNAUTHORIZED).json({
                 message: "Token của bạn không hợp lệ!",

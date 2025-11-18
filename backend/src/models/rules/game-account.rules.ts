@@ -5,13 +5,10 @@ export const gameAccountSchema = z.object({
     body: z.object({
         accountName: z.string().trim().min(1, "Tên đăng nhập không được để trống").max(255).nonempty(),
         password: z.string().trim().min(1, "Mật khẩu không được để trống").nonempty(),
-        price: z.union([z.bigint(), z.number()]).refine((val) => val > 0, {
-            message: "Giá tiền phải lớn hơn 0",
-        }),
-        buyerId: z.string().uuid().optional(),
-        details: z.string().optional(),
+        price: z.number().positive("Giá tiền phải lớn hơn 0"),
+        details: z.record(z.any()),
         thumb: z.string().url("Thumbnail phải là một URL hợp lệ"),
-        images: z.string(),
+        images: z.array(z.string()),
     }),
     params: z.object({
         id: z.string().uuid("ID group không hợp lệ"),
@@ -22,13 +19,7 @@ export const editGameAccountSchema = z.object({
     body: z.object({
         accountName: z.string().trim().min(1).max(255).nonempty(),
         password: z.string().trim().min(1).max(255).nonempty(),
-        price: z
-            .union([z.bigint(), z.number()])
-            .refine((val) => val > 0, {
-                message: "Giá tiền phải lớn hơn 0",
-            })
-            .optional(),
-        buyerId: z.string().uuid().optional(),
+        price: z.number().positive("Giá tiền phải lớn hơn 0"),
         details: z.string().optional(),
         thumb: z.string().url("Thumbnail phải là một URL hợp lệ"),
         images: z.string(),
@@ -41,5 +32,11 @@ export const editGameAccountSchema = z.object({
 export const deleteGameAccountSchema = z.object({
     params: z.object({
         id: z.string().uuid("ID account không hợp lệ"),
+    }),
+});
+
+export const getGameAccountsSchema = z.object({
+    params: z.object({
+        groupId: z.string().uuid("Group ID không hợp lệ"),
     }),
 });

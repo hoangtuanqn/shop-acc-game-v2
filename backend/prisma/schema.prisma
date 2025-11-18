@@ -76,12 +76,12 @@ model GameAccounts {
   groupId     String    @map("group_id") @db.VarChar(255)
   accountName String    @db.VarChar(255)
   password    String    @db.VarChar(255)
-  price       BigInt
+  price       Int
   status      Int       @default(0)
   buyerId     String?   @map("buyer_id") @db.VarChar(255)
-  details     String    @db.Text
+  details     Json      
   thumb       String    @db.VarChar(255)
-  images      String    @db.Text
+  images      Json     
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
