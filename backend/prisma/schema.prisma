@@ -75,6 +75,7 @@ model GameGroups {
 model GameAccounts {
   id          String    @id @default(uuid())
   groupId     String    @map("group_id") @db.VarChar(255)
+  name String    @db.VarChar(255)
   accountName String    @db.VarChar(255)
   password    String    @db.VarChar(255)
   price       Int

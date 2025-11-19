@@ -3,12 +3,13 @@ import { v7 as uuidv7 } from "uuid";
 export default class GameAccount {
     id: string;
     groupId: string;
+    name: string;
     accountName: string;
     password: string;
     price: number;
     status: number;
     buyerId?: string;
-    details: {[key: string]: any};
+    details: { [key: string]: any };
     thumb: string;
     images: string;
     createdAt: Date;
@@ -17,12 +18,13 @@ export default class GameAccount {
     constructor(account: {
         id?: string;
         groupId: string;
+        name: string;
         accountName: string;
         password: string;
         price: number;
         status?: number;
         buyerId?: string;
-        details?: {[key: string]: any};
+        details?: { [key: string]: any };
         thumb: string;
         images: string;
         createdAt?: Date;
@@ -30,6 +32,7 @@ export default class GameAccount {
     }) {
         this.id = account.id || uuidv7();
         this.groupId = account.groupId;
+        this.name = account.name;
         this.accountName = account.accountName;
         this.password = account.password;
         this.price = account.price;

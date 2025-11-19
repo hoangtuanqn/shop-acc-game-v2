@@ -54,6 +54,7 @@ class GameAccountRepository {
             orderBy: { createdAt: "desc" },
             select: {
                 id: true,
+                name: true,
                 price: true,
                 status: true,
                 thumb: true,
@@ -72,6 +73,7 @@ class GameAccountRepository {
             where: { id: accountId },
             select: {
                 id: true,
+                name: true,
                 price: true,
                 status: true,
                 thumb: true,
@@ -100,6 +102,7 @@ class GameAccountRepository {
             orderBy: { createdAt: "desc" },
             select: {
                 id: true,
+                name: true,
                 accountName: true,
                 password: true,
                 price: true,
