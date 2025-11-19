@@ -9,6 +9,7 @@ const ordersServiceRouter = Router();
 // Đặt đơn cho 1 game service cụ thể (cần auth)
 ordersServiceRouter.post(
     "/:gameServiceId",
+    auth,
     validate(createOrderServiceSchema),
     ordersServiceController.createOrder,
 );

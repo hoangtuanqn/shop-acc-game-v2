@@ -56,35 +56,17 @@ class OrdersServiceService {
             });
         }
 
-        // 3. Tạo đơn và trừ tiền (dùng transaction)
-        const result = await prisma.$transaction(async (tx) => {
-            // Tạo đơn
-            const order = await tx.ordersService.create({
-                data: {
-                    gameServiceId: servicePackage.gameServiceId,
-                    servicePackageId: data.servicePackageId,
-                    buyerId: data.userId,
-                    accountName: data.accountName,
-                    password: data.password,
-                    price: servicePackage.price,
-                    status: 0,
-                },
-                include: {
-                    service: true,
-                    package: true,
-                },
-            });
+        // 3. Trừ tiền user
+        await userRepository.updateBalance(data.userId, user.balance - servicePackage.price);
 
-            // Trừ tiền user
-            await tx.user.update({
-                where: { id: data.userId },
-                data: {
-                    balance: { decrement: servicePackage.price },
-                    items: { increment: 1 },
-                },
-            });
-
-            return order;
+        // 4. Tạo đơn
+        const result = await ordersServiceRepository.create({
+            gameServiceId: data.gameServiceId,
+            servicePackageId: data.servicePackageId,
+            buyerId: data.userId,
+            accountName: data.accountName,
+            password: data.password,
+            price: servicePackage.price,
         });
 
         return result;

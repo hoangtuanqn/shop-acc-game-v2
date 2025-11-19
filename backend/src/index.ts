@@ -13,6 +13,7 @@ import redisClient from "./configs/redis";
 import { limiterMiddleware } from "./middlewares/common.middleware";
 import gameServiceRouter from "~/routes/game-service.routes";
 import ordersServiceRouter from "~/routes/orders-service.routes";
+import servicePackageRouter from "~/routes/service-package.routes";
 const app = express();
 const PORT = process.env.PORT || 8000;
 app.use(cors());
@@ -29,6 +30,7 @@ app.use("/game-groups", gameGroupRouter);
 app.use("/game-accounts", gameAccountRouter);
 
 app.use("/game-services", gameServiceRouter);
+app.use("/service-packages", servicePackageRouter);
 app.use("/orders", ordersServiceRouter);
 // handler xử lý lỗi cho cả hệ thống
 app.use(defaultErrorHandler);
