@@ -1,5 +1,10 @@
 import z from "zod/v3";
-import { gameGroupSchema, editGameGroupSchema, delCategoryParamsSchema } from "~/models/rules/game-group.rules";
+import {
+    gameGroupSchema,
+    editGameGroupSchema,
+    delCategoryParamsSchema,
+    getGameGroupsByCategorySchema,
+} from "~/models/rules/game-group.rules";
 
 export type CreateGameGroupRequestBody = z.infer<typeof gameGroupSchema>["body"];
 
@@ -8,3 +13,4 @@ export type EditGameGroupRequestParams = z.infer<typeof editGameGroupSchema>["pa
 
 export type DeleteGameGroupRequestParams = z.infer<typeof delCategoryParamsSchema>["params"];
 
+export type GetGameGroupsParams = z.infer<typeof getGameGroupsByCategorySchema>["params"];

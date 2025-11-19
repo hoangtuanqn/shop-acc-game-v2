@@ -52,6 +52,48 @@ class GameAccountRepository {
             limit,
             where: { groupId },
             orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+                price: true,
+                status: true,
+                thumb: true,
+                images: true,
+                details: true,
+                createdAt: true,
+                updatedAt: true,
+                // KHÔNG select: accountName, password, buyerId
+            },
+        });
+
+        return result;
+    };
+
+    purchase = async (accountId: string, buyerId: string) => {
+        return prisma.gameAccounts.update({
+            where: { id: accountId },
+            data: {
+                buyerId,
+                status: 1, // 1 = đã bán
+            },
+        });
+    };
+
+    getMyPurchasedAccounts = async (userId: string) => {
+        const result = await prisma.gameAccounts.findMany({
+            where: { buyerId: userId },
+            orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+                accountName: true,
+                password: true,
+                price: true,
+                status: true,
+                thumb: true,
+                images: true,
+                details: true,
+                createdAt: true,
+                updatedAt: true,
+            },
         });
 
         return result;

@@ -2,6 +2,7 @@ import { HTTP_STATUS } from "~/constants/httpStatus";
 import { ErrorWithStatus } from "~/models/Error";
 import { CreateGameAccountRequestBody, EditGameAccountRequestBody } from "~/models/requests/game-account.request";
 import gameAccountRepository from "~/repositories/game-account.repository";
+import userRespository from "~/repositories/user.repository";
 
 class GameAccountService {
     public create = async (id: string, data: CreateGameAccountRequestBody) => {
@@ -57,9 +58,43 @@ class GameAccountService {
             });
         }
 
-        
-
         return await gameAccountRepository.getAllByGroupId({ groupId, page, limit });
+    };
+
+    purchaseAccount = async (accountId: string, userId: string) => {
+        const account = await gameAccountRepository.findByAccountId(accountId);
+        if (!account) {
+            throw new ErrorWithStatus({
+                message: "Tài khoản không tồn tại",
+                status: HTTP_STATUS.NOT_FOUND,
+            });
+        }
+
+        if (account.status === 1 || account.buyerId) {
+            throw new ErrorWithStatus({
+                message: "Tài khoản đã được mua",
+                status: HTTP_STATUS.BAD_REQUEST,
+            });
+        }
+
+        // const user = await userRespository.findById(userId);
+        // if (user.balance < account.price) {
+        //     throw new ErrorWithStatus({
+        //         message: "Số dư không đủ",
+        //         status: HTTP_STATUS.BAD_REQUEST
+        //     });
+        // }
+
+        const result = await gameAccountRepository.purchase(accountId, userId);
+
+        // 5. Trừ tiền user (nếu có hệ thống balance)
+        // await userRepository.updateBalance(userId, user.balance - account.price);
+
+        return result;
+    };
+
+    getMyPurchasedAccounts = async (userId: string) => {
+        return gameAccountRepository.getMyPurchasedAccounts(userId);
     };
 }
 

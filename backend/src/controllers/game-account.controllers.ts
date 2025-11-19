@@ -79,3 +79,34 @@ export const getGameAccounts = async (req: Request<GetGameAccountsParams>, res: 
         return next(error);
     }
 };
+
+export const purchaseGameAccount = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const accountId = req.params.id;
+        const userId = req.userId!;
+
+        const result = await gameAccountService.purchaseAccount(accountId, userId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Mua tài khoản thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const getMyPurchasedAccounts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.userId!; 
+
+        const result = await gameAccountService.getMyPurchasedAccounts(userId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy danh sách tài khoản đã mua thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};

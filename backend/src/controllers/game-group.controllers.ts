@@ -6,7 +6,7 @@ import {
     DeleteGameGroupRequestParams,
     EditGameGroupRequestBody,
     EditGameGroupRequestParams,
-
+    GetGameGroupsParams,
 } from "~/models/requests/game-group.request";
 import { HTTP_STATUS } from "~/constants/httpStatus";
 
@@ -59,14 +59,13 @@ export const deleteGameGroup = async (
     }
 };
 
-export const getGameGroups = async (
-    req: Request<ParamsDictionary, any, any>,
-    res: Response,
-    next: NextFunction,
-) => {
+export const getGameGroups = async (req: Request<GetGameGroupsParams>, res: Response, next: NextFunction) => {
     try {
         const categoryId = req.params.categoryId;
-        const result = await gameGroupService.getGameGroups(categoryId);
+        // Parse query params từ string sang number
+        const page = req.query.page ? Number(req.query.page) : 1;
+        const limit = req.query.limit ? Number(req.query.limit) : 10;
+        const result = await gameGroupService.getGameGroups(categoryId, page, limit);
         return res.status(HTTP_STATUS.OK).json({
             message: "Lấy danh sách group thành công",
             result,

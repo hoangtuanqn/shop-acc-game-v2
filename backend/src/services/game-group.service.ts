@@ -53,8 +53,8 @@ class GameGroupService {
         return await gameGroupRepository.delete(id);
     };
 
-    public getGameGroups = async (id: string) => {
-        const categoryExisted = await gameGroupRepository.findByCategoryId(id);
+    public getGameGroups = async (categoryId: string, page?: number, limit?: number) => {
+        const categoryExisted = await gameGroupRepository.findByCategoryId(categoryId);
         if (!categoryExisted) {
             throw new ErrorWithStatus({
                 status: HTTP_STATUS.NOT_FOUND,
@@ -62,9 +62,7 @@ class GameGroupService {
             });
         }
 
-        const result = await gameGroupRepository.getGameGroups(id);
-
-        return result;
+        return await gameGroupRepository.getGameGroups({ categoryId, page, limit });
     };
 }
 

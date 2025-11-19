@@ -14,7 +14,8 @@ export const validate = (schema: AnyZodObject) => (req: Request, res: Response, 
 
         if (result.body !== undefined) req.body = result.body;
         if (result.params !== undefined) req.params = result.params;
-        if (result.query !== undefined) req.query = result.query;
+        // KHÔNG thể assign req.query vì nó là read-only getter
+        // Controller phải tự parse query params
 
         return next();
     } catch (err) {

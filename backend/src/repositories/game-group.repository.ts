@@ -1,6 +1,7 @@
 import prisma from "~/configs/prisma";
 import { EditGameGroupRequestBody } from "~/models/requests/game-group.request";
 import GameGroup from "~/schemas/game-group.schema";
+import { paginate } from "~/utils/pagination";
 
 class GameGroupRepository {
     create = async (data: { categoryId: string; title: string; slug: string; thumbnail: string; active: number }) => {
@@ -38,11 +39,14 @@ class GameGroupRepository {
         });
     };
 
-    getGameGroups = async (id: string) => {
-        const result = await prisma.gameGroups.findMany({
+    getGameGroups = async (params: { categoryId: string; page?: number; limit?: number }) => {
+        const { categoryId, page, limit } = params;
+        const result = await paginate<any>(prisma.gameGroups, {
+            page,
+            limit,
             where: {
-                categoryId: id,
-                active: 1
+                categoryId: categoryId,
+                active: 1,
             },
             orderBy: {
                 createdAt: "desc",

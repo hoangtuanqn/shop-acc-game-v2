@@ -11,7 +11,7 @@ import { validate } from "~/utils/validation";
 
 const gameGroupRouter = Router();
 
-gameGroupRouter.post("/",checkAdmin, validate(gameGroupSchema), gameGroupController.createGameGroup);
+gameGroupRouter.post("/", validate(gameGroupSchema), gameGroupController.createGameGroup);
 gameGroupRouter.put("/:id",checkAdmin, validate(editGameGroupSchema), gameGroupController.editGameGroup);
 
 gameGroupRouter.delete("/:id", checkAdmin, validate(delCategoryParamsSchema), gameGroupController.deleteGameGroup);

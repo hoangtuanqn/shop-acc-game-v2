@@ -51,14 +51,25 @@ export const getGameGroupsByCategorySchema = z.object({
     params: z.object({
         categoryId: z.string().uuid("Category ID không hợp lệ"),
     }),
-    query: z.object({
-        page: z
-            .string()
-            .optional()
-            .transform((val) => (val ? parseInt(val) : 1)),
-        limit: z
-            .string()
-            .optional()
-            .transform((val) => (val ? parseInt(val) : 10)),
-    }),
+    query: z
+        .object({
+            page: z
+                .string()
+                .optional()
+                .transform((val) => (val ? parseInt(val, 10) : 1)),
+
+            limit: z
+                .string()
+                .optional()
+                .transform((val) => (val ? parseInt(val, 10) : 10)),
+        })
+        .refine((data) => !data.page || (data.page > 0 && !isNaN(data.page)), {
+            message: "dữ liệu không hợp lệ",
+            path: ["page"],
+        })
+        .refine((data) => !data.limit || (data.limit > 0 && data.limit <= 100 && !isNaN(data.limit)), {
+            message: "dữ liệu không hợp lệ",
+            path: ["limit"],
+        }),
 });
+ 

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as gameAccountController from "~/controllers/game-account.controllers";
+import { auth } from "~/middlewares/auth.middlewares";
 import { checkAdmin } from "~/middlewares/checkAdmin.middlewares";
 import {
     deleteGameAccountSchema,
@@ -19,4 +20,8 @@ gameAccountRouter.delete("/account/:id", checkAdmin, validate(deleteGameAccountS
 
 gameAccountRouter.get("/group/:groupId", validate(getGameAccountsSchema), gameAccountController.getGameAccounts);
 
+// mua tài khoản
+gameAccountRouter.post("/:id/purchase", auth, gameAccountController.purchaseGameAccount);
+
+gameAccountRouter.get("/my-purchased", auth, gameAccountController.getMyPurchasedAccounts);
 export default gameAccountRouter;
