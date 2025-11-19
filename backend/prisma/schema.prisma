@@ -24,6 +24,7 @@ model User {
   updatedAt         DateTime          @updatedAt @map("updated_at")
   passwordHistories PasswordHistory[]
   gameAccounts      GameAccounts[]
+  ordersService     OrdersService[]
 
   @@map("users")
 }
@@ -90,6 +91,58 @@ model GameAccounts {
 
   @@map("game_accounts")
 }
+
+model GameServices {
+  id          String    @id @default(uuid())
+  name        String    @db.VarChar(30)
+  slug        String    @unique @db.VarChar(255)
+  thumbnail   String    @db.VarChar(255)
+  description String    @db.Text
+  active      Int       @default(1)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  servicePackages ServicePackages[]
+  ordersService   OrdersService[]
+  
+  @@map("game_services")
+}
+
+model ServicePackages {
+  id                   String    @id @default(uuid())
+  gameServiceId        String    @db.VarChar(255)
+  name                 String    @unique @db.VarChar(255)
+  price                Int
+  active               Int       @default(1)
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  ordersService   OrdersService[]
+
+  service   GameServices @relation(fields: [gameServiceId], references: [id])
+  
+  @@map("services_packages")
+}
+
+model OrdersService {
+  id                    String    @id @default(uuid())
+  gameServiceId         String    @map("game_service_id") @db.VarChar(255)
+  servicePackageId      String    @map("service_package_id") @db.VarChar(255)
+  buyerId               String    @map("buyer_id") @db.VarChar(255)
+  accountName String    @db.VarChar(255)
+  password    String    @db.VarChar(255)
+  price                Int
+  status               Int       @default(0)
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  service   GameServices    @relation(fields: [gameServiceId], references: [id])
+  package   ServicePackages @relation(fields: [servicePackageId], references: [id])
+  user      User            @relation(fields: [buyerId], references: [id])
+  
+  @@map("orders_service")
+}
+
 
 
 enum Role {
