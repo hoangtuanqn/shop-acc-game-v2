@@ -59,6 +59,13 @@ class UserRepository {
         });
         return result;
     };
+
+    updateBalance = async (userId: string, newBalance: number) => {
+        return prisma.user.update({
+            where: { id: userId },
+            data: { balance: newBalance },
+        });
+    };
 }
 const userRespository = new UserRepository();
 export default userRespository;

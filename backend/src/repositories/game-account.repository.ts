@@ -58,7 +58,6 @@ class GameAccountRepository {
                 status: true,
                 thumb: true,
                 images: true,
-                details: true,
                 createdAt: true,
                 updatedAt: true,
                 // KHÔNG select: accountName, password, buyerId
@@ -66,6 +65,23 @@ class GameAccountRepository {
         });
 
         return result;
+    };
+
+    getAccountDetail = async (accountId: string) => {
+        return prisma.gameAccounts.findUnique({
+            where: { id: accountId },
+            select: {
+                id: true,
+                price: true,
+                status: true,
+                thumb: true,
+                images: true,
+                details: true,
+                createdAt: true,
+                updatedAt: true,
+                // KHÔNG select: accountName, password, buyerId
+            },
+        });
     };
 
     purchase = async (accountId: string, buyerId: string) => {

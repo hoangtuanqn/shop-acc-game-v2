@@ -40,3 +40,9 @@ export const getGameAccountsSchema = z.object({
         groupId: z.string().uuid("Group ID không hợp lệ"),
     }),
 });
+
+export const getOneAccountSchema = z.object({
+    params: z.object({
+        accountId: z.string().uuid("Group ID không hợp lệ"),
+    }),
+});

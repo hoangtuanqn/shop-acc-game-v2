@@ -62,6 +62,7 @@ class GameAccountService {
     };
 
     purchaseAccount = async (accountId: string, userId: string) => {
+        // 1. Kiểm tra account có tồn tại không
         const account = await gameAccountRepository.findByAccountId(accountId);
         if (!account) {
             throw new ErrorWithStatus({
@@ -70,6 +71,7 @@ class GameAccountService {
             });
         }
 
+        // 2. Kiểm tra đã được mua chưa
         if (account.status === 1 || account.buyerId) {
             throw new ErrorWithStatus({
                 message: "Tài khoản đã được mua",
@@ -77,24 +79,47 @@ class GameAccountService {
             });
         }
 
-        // const user = await userRespository.findById(userId);
-        // if (user.balance < account.price) {
-        //     throw new ErrorWithStatus({
-        //         message: "Số dư không đủ",
-        //         status: HTTP_STATUS.BAD_REQUEST
-        //     });
-        // }
+        // 3. Lấy thông tin user
+        const user = await userRespository.findById(userId);
+        if (!user) {
+            throw new ErrorWithStatus({
+                message: "User không tồn tại",
+                status: HTTP_STATUS.NOT_FOUND,
+            });
+        }
 
+        // 4. Kiểm tra số dư
+        if (user.balance < account.price) {
+            throw new ErrorWithStatus({
+                message: `Số dư không đủ! Bạn cần ${account.price - user.balance} VND nữa`,
+                status: HTTP_STATUS.BAD_REQUEST,
+            });
+        }
+
+        // 5. Thực hiện mua (trong transaction để đảm bảo data consistency)
         const result = await gameAccountRepository.purchase(accountId, userId);
 
-        // 5. Trừ tiền user (nếu có hệ thống balance)
-        // await userRepository.updateBalance(userId, user.balance - account.price);
+        // 6. Trừ tiền user
+        await userRespository.updateBalance(userId, user.balance - account.price);
 
         return result;
     };
 
     getMyPurchasedAccounts = async (userId: string) => {
         return gameAccountRepository.getMyPurchasedAccounts(userId);
+    };
+
+    getAccountDetail = async (accountId: string) => {
+        const account = await gameAccountRepository.getAccountDetail(accountId);
+
+        if (!account) {
+            throw new ErrorWithStatus({
+                message: "Tài khoản không tồn tại",
+                status: HTTP_STATUS.NOT_FOUND,
+            });
+        }
+
+        return account;
     };
 }
 

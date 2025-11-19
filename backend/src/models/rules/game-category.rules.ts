@@ -33,7 +33,6 @@ export const editGameCategorySchema = z.object({
                 message: "Trạng thái không hợp lệ",
             })
             .default(1),
-
     }),
     params: z.object({
         id: z.string().uuid("ID danh mục không hợp lệ"),
@@ -42,6 +41,6 @@ export const editGameCategorySchema = z.object({
 
 export const deleteGameCategorySchema = z.object({
     params: z.object({
-        id: z.string(),
+        id: z.string().uuid("ID danh mục không hợp lệ"),
     }),
 });
