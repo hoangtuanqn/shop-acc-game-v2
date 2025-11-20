@@ -61,6 +61,17 @@ class ServicePackageService {
 
         return servicePackageRepository.getByGameServiceId(gameServiceId);
     };
+
+    getById = async (id: string) => {
+        const pkg = await servicePackageRepository.findById(id);
+        if (!pkg) {
+            throw new ErrorWithStatus({
+                message: "Service package không tồn tại",
+                status: HTTP_STATUS.NOT_FOUND,
+            });
+        }
+        return pkg;
+    };
 }
 
 const servicePackageService = new ServicePackageService();

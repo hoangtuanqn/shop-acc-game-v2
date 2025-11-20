@@ -56,6 +56,7 @@ class GameAccountRepository {
                 id: true,
                 name: true,
                 price: true,
+                details: true,
                 status: true,
                 thumb: true,
                 images: true,

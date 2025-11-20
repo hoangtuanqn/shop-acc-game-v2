@@ -78,14 +78,14 @@ export const deleteGameService = async (req: Request, res: Response, next: NextF
 //     }
 // };
 
-// export const getAllGameServices = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//         const result = await gameCategoryService.getAll();
-//         return res.status(HTTP_STATUS.OK).json({
-//             message: "Lấy danh sách danh mục thành công",
-//             result,
-//         });
-//     } catch (error) {
-//         return next(error);
-//     }
-// };
+export const getAllGameServices = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await gameServiceService.getAll();
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy danh sách dịch vụ thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};

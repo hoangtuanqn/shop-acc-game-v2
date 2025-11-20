@@ -30,9 +30,11 @@ servicePackageRouter.delete(
 );
 
 servicePackageRouter.get(
-    "/:gameServiceId/packages",
+    "/:gameServiceId",
     validate(getPackagesByServiceSchema),
     servicePackageController.getPackagesByService,
 );
+
+servicePackageRouter.get("/packages/:id", servicePackageController.getServicePackageById);
 
 export default servicePackageRouter;

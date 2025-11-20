@@ -67,3 +67,16 @@ export const getPackagesByService = async (req: Request, res: Response, next: Ne
         return next(error);
     }
 };
+
+export const getServicePackageById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const packageId = req.params.id;
+        const result = await servicePackageService.getById(packageId);
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy chi tiết gói dịch vụ thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};

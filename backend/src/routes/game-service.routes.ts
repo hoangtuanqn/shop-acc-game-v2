@@ -12,5 +12,6 @@ gameServiceRouter.put("/:id", validate(editGameServiceSchema), gameServiceContro
 gameServiceRouter.delete("/:id", validate(deleteGameServiceSchema), gameServiceController.deleteGameService);
 
 //view
-// gameServiceRouter.get("/", gameServiceController.getAllGameServices);
+gameServiceRouter.get("/", gameServiceController.getAllGameServices);
+
 export default gameServiceRouter;

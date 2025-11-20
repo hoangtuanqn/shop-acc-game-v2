@@ -43,17 +43,9 @@ class GameServiceService {
     //     return count > 0;
     // };
 
-    // getAll = async () => {
-    //     const result = await prisma.gameServices.findMany({
-    //         where: {
-    //             active: 1,
-    //         },
-    //         orderBy: {
-    //             createdAt: "desc",
-    //         },
-    //     });
-    //     return result;
-    // };
+    getAll = async () => {
+        return await gameServiceRepository.getAll();
+    };
 }
 
 const gameServiceService = new GameServiceService();

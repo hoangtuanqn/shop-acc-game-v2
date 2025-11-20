@@ -10,10 +10,10 @@ import { validate } from "~/utils/validation";
 
 const gameCategoryRouter = Router();
 
-gameCategoryRouter.post("/",checkAdmin, validate(gameCategorySchema), gameCategoryController.createGameCategory);
-gameCategoryRouter.put("/:id",checkAdmin, validate(editGameCategorySchema), gameCategoryController.editGameCategory);
+gameCategoryRouter.post("/", validate(gameCategorySchema), gameCategoryController.createGameCategory);
+gameCategoryRouter.put("/:id", validate(editGameCategorySchema), gameCategoryController.editGameCategory);
 
-gameCategoryRouter.delete("/:id", checkAdmin, validate(deleteGameCategorySchema), gameCategoryController.deleteGameCategory);
+gameCategoryRouter.delete("/:id", validate(deleteGameCategorySchema), gameCategoryController.deleteGameCategory);
 
 //view
 gameCategoryRouter.get("/", gameCategoryController.getAllGameCategorys);

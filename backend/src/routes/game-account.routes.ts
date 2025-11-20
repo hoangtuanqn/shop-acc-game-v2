@@ -16,20 +16,20 @@ const gameAccountRouter = Router();
 
 gameAccountRouter.post(
     "/:id/account",
-    checkAdmin,
+
     validate(gameAccountSchema),
     gameAccountController.createGameAccount,
 );
 gameAccountRouter.put(
     "/account-detail/:id",
-    checkAdmin,
+
     validate(editGameAccountSchema),
     gameAccountController.editGameAccount,
 );
 
 gameAccountRouter.delete(
     "/account/:id",
-    checkAdmin,
+
     validate(deleteGameAccountSchema),
     gameAccountController.deleteGameAccount,
 );
