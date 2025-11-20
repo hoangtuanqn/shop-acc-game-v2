@@ -8,6 +8,7 @@ import { ForgotPasswordRequestBody, LoginRequestBody, RegisterRequestBody } from
 import Helpers from "~/utils/helpers";
 import redisClient from "~/configs/redis";
 import pwsHisRepository from "~/repositories/password-history.repository";
+import mailer from "~/utils/mailer";
 
 class AuthService {
     public create = async (data: RegisterRequestBody) => {
@@ -47,6 +48,27 @@ class AuthService {
 
         // Lưu mk người dùng vô bảng lịch sử
         await pwsHisRepository.save(result.id, passwordHash);
+        const tokenVerify = await this.signToken({
+            userId: result.id,
+            type: TokenType.RefreshToken,
+            expiresIn: ExpiresInTokenType.EmailVerifyToken,
+        });
+        const verificationLink = `${process.env.CLIENT_URL}/verify-token/${tokenVerify}`;
+        await mailer.sendMail({
+            to: email,
+            subject: "Xác minh tài khoản của bạn trên hệ thống " + process.env.APP_NAME,
+            recipient_name: result.username,
+            main_content_html: `
+                <p style="margin-bottom: 25px;">Cảm ơn bạn đã đăng ký tài khoản <b>${process.env.APP_NAME}</b>. Tài khoản của bạn hiện chưa được kích hoạt.</p>
+                <p>Vui lòng nhấp vào nút bên dưới để <b>xác minh địa chỉ email</b> và hoàn tất quá trình đăng ký.</p>
+                <p style="font-style: italic; color: #cc0000;">Lưu ý: Liên kết này sẽ hết hạn sau 24 giờ.</p>
+            `,
+            sub_content_html: `
+                <p>Nếu bạn không đăng ký tài khoản này, vui lòng bỏ qua email này.</p>
+            `,
+            cta_text: "Xác minh ngay",
+            url: verificationLink,
+        });
 
         return await this.signAccesAndRefreshToken(result.id);
     };
