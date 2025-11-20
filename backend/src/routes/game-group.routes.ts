@@ -11,6 +11,13 @@ import { validate } from "~/utils/validation";
 
 const gameGroupRouter = Router();
 
+// Admin: Lấy tất cả group của 1 category (không lọc active, có phân trang)
+gameGroupRouter.get(
+    "/admin/category/:categoryId",
+
+    gameGroupController.getAllGameGroupsAdmin,
+);
+
 gameGroupRouter.post("/", validate(gameGroupSchema), gameGroupController.createGameGroup);
 gameGroupRouter.put("/:id", validate(editGameGroupSchema), gameGroupController.editGameGroup);
 

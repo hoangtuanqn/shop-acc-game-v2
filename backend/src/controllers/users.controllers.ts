@@ -31,6 +31,20 @@ export const register = async (
     }
 };
 
+export const getOneUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Lấy userId từ token (profile của chính mình)
+        const userId = req.userId as string;
+        const result = await userService.getOneUser(userId);
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy thông tin user thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
 export const login = async (
     req: Request<ParamsDictionary, any, LoginRequestBody>,
     res: Response,

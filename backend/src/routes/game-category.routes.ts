@@ -10,6 +10,9 @@ import { validate } from "~/utils/validation";
 
 const gameCategoryRouter = Router();
 
+// Admin view all categories (active 0 và 1)
+gameCategoryRouter.get("/admin/all", gameCategoryController.getAllGameCategorysAdmin);
+
 gameCategoryRouter.post("/", validate(gameCategorySchema), gameCategoryController.createGameCategory);
 gameCategoryRouter.put("/:id", validate(editGameCategorySchema), gameCategoryController.editGameCategory);
 

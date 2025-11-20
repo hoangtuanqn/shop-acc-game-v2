@@ -48,6 +48,17 @@ class GameAccountService {
         return await gameAccountRepository.delete(id);
     };
 
+    public getAccountsAdmin = async (groupId: string, page?: number, limit?: number) => {
+        const groupExists = await gameAccountRepository.findByGroupId(groupId);
+        if (!groupExists) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Group không tồn tại!",
+            });
+        }
+        return gameAccountRepository.getAllByGroupIdAdmin({ groupId, page, limit });
+    };
+
     public getAccounts = async (groupId: string, page?: number, limit?: number) => {
         // 1. Kiểm tra group có tồn tại không
         const groupExists = await gameAccountRepository.findByGroupId(groupId);

@@ -142,6 +142,18 @@ class AuthService {
         await userRespository.changePassword(userId, passwordHash);
     };
 
+    public getOneUser = async (userId: string) => {
+        const user = await userRespository.findById(userId);
+        if (!user) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "User không tồn tại!",
+            });
+        }
+        // Có thể loại bỏ các trường nhạy cảm nếu cần
+        return user;
+    };
+
     private signToken = ({
         userId,
         type,

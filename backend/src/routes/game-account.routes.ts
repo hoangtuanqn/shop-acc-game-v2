@@ -34,6 +34,13 @@ gameAccountRouter.delete(
     gameAccountController.deleteGameAccount,
 );
 
+gameAccountRouter.get(
+    "/admin/group/:groupId",
+
+    validate(getGameAccountsSchema),
+    gameAccountController.getAccountsAdmin,
+);
+
 gameAccountRouter.get("/group/:groupId", validate(getGameAccountsSchema), gameAccountController.getGameAccounts);
 
 // mua tài khoản

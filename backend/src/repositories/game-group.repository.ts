@@ -54,6 +54,21 @@ class GameGroupRepository {
         });
         return result;
     };
+    // Admin: Lấy tất cả group của 1 category (không lọc active) có phân trang
+    getAllAdmin = async (params: { categoryId: string; page?: number; limit?: number }) => {
+        const { categoryId, page, limit } = params;
+        const result = await paginate<any>(prisma.gameGroups, {
+            page,
+            limit,
+            where: {
+                categoryId: categoryId,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+        return result;
+    };
 }
 
 const gameGroupRepository = new GameGroupRepository();

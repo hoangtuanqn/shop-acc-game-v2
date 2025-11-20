@@ -2,6 +2,7 @@ import { Router } from "express";
 import { TokenType } from "~/constants/enums";
 import * as authController from "~/controllers/users.controllers";
 import * as authMiddleware from "~/middlewares/auth.middlewares";
+import { auth } from "~/middlewares/auth.middlewares";
 import {
     changePasswordSchema,
     forgotPasswordSchema,
@@ -39,6 +40,10 @@ authRouter.post(
     authMiddleware.verifyToken(TokenType.ForgotPasswordToken),
     authController.resetPassword,
 );
+
+// ...existing code...
+authRouter.get("/profile", auth, authController.getOneUser);
+
 // Thay đổi mk (lúc người dùng đang đăng nhập)
 authRouter.post("/change-password", authMiddleware.auth, validate(changePasswordSchema), authController.changePassword);
 export default authRouter;

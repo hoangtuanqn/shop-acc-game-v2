@@ -118,6 +118,30 @@ class GameAccountRepository {
 
         return result;
     };
+
+    getAllByGroupIdAdmin = async (params: { groupId: string; page?: number; limit?: number }) => {
+        const { groupId, page, limit } = params;
+        return paginate<any>(prisma.gameAccounts, {
+            page,
+            limit,
+            where: { groupId, status: 0 },
+            orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                details: true,
+                status: true,
+                thumb: true,
+                images: true,
+                createdAt: true,
+                updatedAt: true,
+                accountName: true,
+                password: true,
+                buyerId: true,
+            },
+        });
+    };
 }
 
 const gameAccountRepository = new GameAccountRepository();

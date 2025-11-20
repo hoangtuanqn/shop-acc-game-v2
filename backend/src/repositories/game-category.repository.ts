@@ -48,9 +48,17 @@ class GameCategoryRepository {
         });
         return result;
     };
+
+    // Admin: Lấy tất cả category (không lọc active)
+    getAllAdmin = async () => {
+        const result = await prisma.gameCategories.findMany({
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+        return result;
+    };
 }
-
-
 
 const gameCategoryRepository = new GameCategoryRepository();
 export default gameCategoryRepository;

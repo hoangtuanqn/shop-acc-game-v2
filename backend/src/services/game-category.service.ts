@@ -47,6 +47,12 @@ class GameCategoryService {
 
         return result;
     };
+
+    // Admin: Lấy tất cả category (không lọc active)
+    public getAllAdmin = async () => {
+        const result = await gameCategoryRepository.getAllAdmin();
+        return result;
+    };
 }
 
 const gameCategoryService = new GameCategoryService();

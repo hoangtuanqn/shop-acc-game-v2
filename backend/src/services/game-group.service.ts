@@ -64,6 +64,11 @@ class GameGroupService {
 
         return await gameGroupRepository.getGameGroups({ categoryId, page, limit });
     };
+    // Admin: Lấy tất cả group của 1 category (không lọc active, có phân trang)
+    public getAllAdmin = async (categoryId: string, page?: number, limit?: number) => {
+        const result = await gameGroupRepository.getAllAdmin({ categoryId, page, limit });
+        return result;
+    };
 }
 
 const gameGroupService = new GameGroupService();

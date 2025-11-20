@@ -74,3 +74,19 @@ export const getGameGroups = async (req: Request<GetGameGroupsParams>, res: Resp
         return next(error);
     }
 };
+
+// Admin: Lấy tất cả group của 1 category (không lọc active, có phân trang)
+export const getAllGameGroupsAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const categoryId = req.params.categoryId;
+        const page = req.query.page ? Number(req.query.page) : 1;
+        const limit = req.query.limit ? Number(req.query.limit) : 10;
+        const result = await gameGroupService.getAllAdmin(categoryId, page, limit);
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy tất cả group (admin) thành công",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
