@@ -2,8 +2,6 @@ import nodemailer, { Transporter } from "nodemailer";
 import fs from "fs";
 import path from "path";
 
-// K.O. Các import liên quan đến FIX LỖI __dirname phức tạp đã bị loại bỏ
-
 interface TemplateVariables {
     subject: string;
     recipient_name: string;
@@ -67,7 +65,7 @@ class Mailer {
 
         const finalHtml = this.replaceTemplateVariables(templateHtml, allVariables);
 
-        const info = await this.transporter.sendMail({
+        await this.transporter.sendMail({
             from: process.env.APP_NAME,
             to,
             subject,

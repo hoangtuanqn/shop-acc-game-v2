@@ -50,10 +50,10 @@ class AuthService {
         await pwsHisRepository.save(result.id, passwordHash);
         const tokenVerify = await this.signToken({
             userId: result.id,
-            type: TokenType.RefreshToken,
+            type: TokenType.EmailVerifyToken,
             expiresIn: ExpiresInTokenType.EmailVerifyToken,
         });
-        const verificationLink = `${process.env.CLIENT_URL}/verify-token/${tokenVerify}`;
+        const verificationLink = `${process.env.CLIENT_URL}/verify-email/${tokenVerify}`;
         await mailer.sendMail({
             to: email,
             subject: "Xác minh tài khoản của bạn trên hệ thống " + process.env.APP_NAME,
@@ -69,7 +69,7 @@ class AuthService {
             cta_text: "Xác minh ngay",
             url: verificationLink,
         });
-
+        await userRespository.updateTokenVerify(result.id, tokenVerify);
         return await this.signAccesAndRefreshToken(result.id);
     };
 
@@ -162,6 +162,23 @@ class AuthService {
         }
         const passwordHash = await AlgoCrypoto.hashPassword(newPassword);
         await userRespository.changePassword(userId, passwordHash);
+    };
+    public verifyEmail = async (token: string) => {
+        try {
+            const payload = await AlgoJwt.verifyToken({ token });
+            if (payload.type !== TokenType.EmailVerifyToken) {
+                throw new ErrorWithStatus({
+                    status: HTTP_STATUS.UNAUTHORIZED,
+                    message: "Token không chính xác!",
+                });
+            }
+            return await userRespository.verifyEmail(payload.userId, token);
+        } catch {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: "Token không thể xác minh!",
+            });
+        }
     };
 
     public getOneUser = async (userId: string) => {
