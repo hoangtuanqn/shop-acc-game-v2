@@ -181,24 +181,6 @@ class AuthService {
         }
     };
 
-    public verifyEmail = async (token: string) => {
-        try {
-            const payload = await AlgoJwt.verifyToken({ token });
-            if (payload.type !== TokenType.EmailVerifyToken) {
-                throw new ErrorWithStatus({
-                    status: HTTP_STATUS.UNAUTHORIZED,
-                    message: "Token không chính xác!",
-                });
-            }
-            return await userRespository.verifyEmail(payload.userId, token);
-        } catch {
-            throw new ErrorWithStatus({
-                status: HTTP_STATUS.UNAUTHORIZED,
-                message: "Token không thể xác minh!",
-            });
-        }
-    };
-
     public getOneUser = async (userId: string) => {
         const user = await userRespository.findById(userId);
         if (!user) {
