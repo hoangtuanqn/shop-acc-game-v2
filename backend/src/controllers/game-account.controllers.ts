@@ -139,3 +139,30 @@ export const getAccountsAdmin = async (req: Request, res: Response, next: NextFu
         return next(error);
     }
 };
+
+export const getAccountDetailAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const accountId = req.params.id;
+        const result = await gameAccountService.getAccountDetailAdmin(accountId);
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy chi tiết account (admin) thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};
+
+export const getSoldAccountsHistoryAdmin = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const page = req.query.page ? Number(req.query.page) : 1;
+        const limit = req.query.limit ? Number(req.query.limit) : 10;
+        const result = await gameAccountService.getSoldAccountsHistoryAdmin(page, limit);
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Lấy lịch sử account đã bán thành công!",
+            result,
+        });
+    } catch (error) {
+        return next(error);
+    }
+};

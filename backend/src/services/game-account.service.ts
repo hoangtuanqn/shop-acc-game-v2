@@ -132,6 +132,20 @@ class GameAccountService {
 
         return account;
     };
+    public getAccountDetailAdmin = async (accountId: string) => {
+        const account = await gameAccountRepository.getAccountDetailAdmin(accountId);
+        if (!account) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Account không tồn tại!",
+            });
+        }
+        return account;
+    };
+
+    public getSoldAccountsHistoryAdmin = async (page?: number, limit?: number) => {
+        return gameAccountRepository.getSoldAccountsHistoryAdmin({ page, limit });
+    };
 }
 
 const gameAccountService = new GameAccountService();

@@ -20,6 +20,10 @@ gameAccountRouter.post(
     validate(gameAccountSchema),
     gameAccountController.createGameAccount,
 );
+
+// Admin: Lấy chi tiết 1 account đầy đủ thông tin
+gameAccountRouter.get("/admin/account/:id", gameAccountController.getAccountDetailAdmin);
+
 gameAccountRouter.put(
     "/account-detail/:id",
 
@@ -50,5 +54,8 @@ gameAccountRouter.get("/my-purchased", auth, gameAccountController.getMyPurchase
 
 // get one account
 gameAccountRouter.get("/detail/:id", validate(getOneAccountSchema), gameAccountController.getAccountDetail);
+
+// get danh sách acc đã bán admin
+gameAccountRouter.get("/admin/sold-history", gameAccountController.getSoldAccountsHistoryAdmin);
 
 export default gameAccountRouter;
