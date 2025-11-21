@@ -41,7 +41,6 @@ authRouter.post(
     authController.resetPassword,
 );
 
-// ...existing code...
 authRouter.get("/profile", auth, authController.getOneUser);
 
 // Thay đổi mk (lúc người dùng đang đăng nhập)

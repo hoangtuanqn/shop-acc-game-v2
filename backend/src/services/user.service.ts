@@ -108,12 +108,36 @@ class AuthService {
     };
 
     public forgotPassword = async ({ email }: ForgotPasswordRequestBody) => {
-        const accountExisted = await userRespository.findByEmail(email);
+        const result = await userRespository.findByEmail(email);
+        if (!result) {
+            throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: "Không tìm thấy tài khoản với địa chỉ email đã cung cấp!",
+            });
+        }
 
-        if (accountExisted) {
+        if (result) {
             const forgotPasswordToken = await this.signToken({
-                userId: accountExisted.id,
+                userId: result.id,
                 type: TokenType.ForgotPasswordToken,
+                expiresIn: ExpiresInTokenType.ForgotPasswordToken,
+            });
+            const resetPasswordLink = `${process.env.CLIENT_URL}/reset-password/${forgotPasswordToken}`;
+            await mailer.sendMail({
+                to: email,
+                subject: "Yêu cầu Đặt lại Mật khẩu trên hệ thống " + process.env.APP_NAME,
+                recipient_name: result.username,
+                main_content_html: `
+        <p style="margin-bottom: 25px;">Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản <b>${process.env.APP_NAME}</b> của mình.</p>
+        <p>Vui lòng nhấp vào nút bên dưới để tiến hành <b>tạo mật khẩu mới</b>.</p>
+        <p style="font-style: italic; color: #cc0000;">Lưu ý: Liên kết này sẽ <b>hết hạn sau 15 phút</b> vì lý do bảo mật.</p>
+    `,
+                sub_content_html: `
+        <p>Nếu bạn <b>không</b> thực hiện yêu cầu này, bạn có thể bỏ qua email này. Mật khẩu hiện tại của bạn sẽ vẫn an toàn.</p>
+        <p>Nếu bạn gặp bất kỳ vấn đề gì, vui lòng liên hệ với bộ phận hỗ trợ của chúng tôi.</p>
+    `,
+                cta_text: "Đặt lại Mật khẩu",
+                url: resetPasswordLink,
             });
 
             await userRespository.forgotPassword(email, forgotPasswordToken);
