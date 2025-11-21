@@ -40,6 +40,9 @@ class RedisClient {
             await this.client.set(key, value);
         }
     };
+    increment = async (key: string): Promise<number> => {
+        return await this.client.incr(key);
+    };
 
     get = async (key: string): Promise<string | null> => {
         return await this.client.get(key);
@@ -47,6 +50,13 @@ class RedisClient {
 
     del = async (key: string): Promise<number> => {
         return await this.client.del(key);
+    };
+    setExpire = async (key: string, ttlSeconds: number): Promise<number> => {
+        return await this.client.expire(key, ttlSeconds);
+    };
+
+    getTTL = async (key: string): Promise<number> => {
+        return await this.client.ttl(key);
     };
 }
 const redisClient = new RedisClient();

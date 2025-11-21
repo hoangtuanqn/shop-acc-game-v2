@@ -75,13 +75,35 @@ class AuthService {
 
     public login = async (data: LoginRequestBody) => {
         const { username, password } = data;
+
         const accountExisted = await userRespository.findByUsername(username);
+        if (accountExisted) {
+            const countFailed = +((await redisClient.get(`login_fail:${username}`)) || 0);
+            const ttl = await redisClient.getTTL(`login_fail:${username}`);
+            if (countFailed >= 5) {
+                throw new ErrorWithStatus({
+                    status: HTTP_STATUS.FORBIDDEN,
+                    message: `Không thể đăng nhập vào tài khoản của bạn do vượt quá số lần thử đăng nhập cho phép. Vui lòng thử lại sau ${Math.ceil(
+                        ttl / 60,
+                    )} phút.`,
+                });
+            }
+        }
         if (!accountExisted || !(await AlgoCrypoto.verifyPassword(password, accountExisted.password))) {
+            const incr = await redisClient.increment(`login_fail:${username}`);
+            if (incr >= 5) {
+                await redisClient.setExpire(`login_fail:${username}`, 15 * 60);
+                throw new ErrorWithStatus({
+                    status: HTTP_STATUS.FORBIDDEN,
+                    message: `Không thể đăng nhập vào tài khoản của bạn do vượt quá số lần thử đăng nhập cho phép. Vui lòng thử lại sau 15 phút.`,
+                });
+            }
             throw new ErrorWithStatus({
                 status: HTTP_STATUS.NOT_FOUND,
-                message: "Thông tin đăng nhập của bạn không hợp lệ!",
+                message: `Thông tin đăng nhập của bạn không hợp lệ, bạn còn ${5 - incr} lần thử!`,
             });
         }
+        await redisClient.del(`login_fail:${username}`);
         return await this.signAccesAndRefreshToken(accountExisted.id);
     };
 
