@@ -5,6 +5,26 @@ import userRepository from "~/repositories/user.repository";
 import prisma from "~/configs/prisma";
 
 class OrdersServiceService {
+    updateOrderStatusAdmin = async (orderId: string, status: number) => {
+        // Kiểm tra hợp lệ
+        if (![0, 1, 2].includes(status)) {
+            throw new ErrorWithStatus({
+                message: "Trạng thái không hợp lệ!",
+                status: HTTP_STATUS.BAD_REQUEST,
+            });
+        }
+        // Kiểm tra đơn hàng tồn tại
+        const order = await ordersServiceRepository.findById(orderId);
+        if (!order) {
+            throw new ErrorWithStatus({
+                message: "Đơn hàng không tồn tại!",
+                status: HTTP_STATUS.NOT_FOUND,
+            });
+        }
+        // Cập nhật status
+        return ordersServiceRepository.updateStatus(orderId, status);
+    };
+
     createOrder = async (data: {
         gameServiceId: string;
         servicePackageId: string;
@@ -51,7 +71,7 @@ class OrdersServiceService {
 
         if (user.balance < servicePackage.price) {
             throw new ErrorWithStatus({
-                message: `Số dư không đủ! Bạn cần ${servicePackage.price - user.balance} xu nữa`,
+                message: `Số dư không đủ! Bạn cần ${servicePackage.price - user.balance} VND nữa`,
                 status: HTTP_STATUS.BAD_REQUEST,
             });
         }
@@ -95,6 +115,10 @@ class OrdersServiceService {
         }
 
         return order;
+    };
+
+    public getAllOrdersAdmin = async (page?: number, limit?: number) => {
+        return ordersServiceRepository.getAllOrdersAdmin({ page, limit });
     };
 }
 

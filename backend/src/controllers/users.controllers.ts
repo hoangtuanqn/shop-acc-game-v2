@@ -12,8 +12,6 @@ import {
 } from "~/models/requests/user.request";
 import userService from "~/services/user.service";
 import { HTTP_STATUS } from "~/constants/httpStatus";
-import prisma from "~/configs/prisma";
-import { paginate } from "~/utils/pagination";
 
 export const register = async (
     req: Request<ParamsDictionary, any, RegisterRequestBody>,
@@ -105,11 +103,10 @@ export const resetPassword = async (
 };
 export const verifyEmail = async (req: Request<VerifyEmailRequestParams>, res: Response, next: NextFunction) => {
     const { token } = req.params;
-    const { password } = req.body;
     try {
-        await userService.resetPassword(token, password);
+        await userService.verifyEmail(token);
         return res.status(HTTP_STATUS.OK).json({
-            message: "Đã đặt lại mật khẩu thành công!",
+            message: "Đã xác thực email thành công!",
         });
     } catch (error) {
         return next(error);

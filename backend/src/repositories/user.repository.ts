@@ -66,6 +66,20 @@ class UserRepository {
             data: { balance: newBalance },
         });
     };
+
+    updateTokenVerify = async (userId: string, token: string) => {
+        return prisma.user.update({
+            where: { id: userId },
+            data: { emailVerifyToken: token },
+        });
+    };
+
+    verifyEmail = async (userId: string, token: string) => {
+        return prisma.user.update({
+            where: { id: userId, verify: 0, emailVerifyToken: token },
+            data: { emailVerifyToken: null, verify: 1 },
+        });
+    };
 }
 const userRespository = new UserRepository();
 export default userRespository;

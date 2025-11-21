@@ -142,6 +142,52 @@ class GameAccountRepository {
             },
         });
     };
+
+    getAccountDetailAdmin = async (accountId: string) => {
+        return prisma.gameAccounts.findUnique({
+            where: { id: accountId },
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                status: true,
+                thumb: true,
+                images: true,
+                details: true,
+                createdAt: true,
+                updatedAt: true,
+                accountName: true,
+                password: true,
+                buyerId: true,
+            },
+        });
+    };
+
+    getSoldAccountsHistoryAdmin = async (params: { page?: number; limit?: number }) => {
+        const { page, limit } = params;
+        return paginate<any>(prisma.gameAccounts, {
+            page,
+            limit,
+            where: { status: 1 },
+            orderBy: { updatedAt: "desc" },
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                details: true,
+                status: true,
+                thumb: true,
+                images: true,
+                createdAt: true,
+                updatedAt: true,
+                accountName: true,
+                password: true,
+                buyerId: true,
+
+                user: true,
+            },
+        });
+    };
 }
 
 const gameAccountRepository = new GameAccountRepository();
